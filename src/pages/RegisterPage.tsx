@@ -6,17 +6,31 @@ import { useAuth } from '../context/AuthContext';
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { register, isLoading } = useAuth();
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: FormEvent) => {
+  /**
+   * Handles registration using the backend API and stores the resulting user session.
+   */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     try {
-      await register({ name, email, password, accountType: 'individual' });
+      await register({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        password,
+        userType: 'INDIVIDUAL',
+      });
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
@@ -43,7 +57,11 @@ const RegisterPage = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <div
+                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
+                role="alert"
+                aria-live="assertive"
+              >
                 {error}
               </div>
             )}
@@ -56,10 +74,12 @@ const RegisterPage = () => {
               <input
                 type="text"
                 id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 placeholder="John Doe"
+                autoComplete="name"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -76,6 +96,8 @@ const RegisterPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 placeholder="you@email.com"
+                autoComplete="email"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -92,6 +114,26 @@ const RegisterPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
+                autoComplete="new-password"
+                disabled={isLoading}
+                required
+              />
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -102,6 +144,7 @@ const RegisterPage = () => {
                 type="checkbox"
                 id="terms"
                 className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 mt-1"
+                disabled={isLoading}
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                 I accept the{' '}

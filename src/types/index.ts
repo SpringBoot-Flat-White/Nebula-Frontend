@@ -22,25 +22,45 @@ export interface Feature {
 }
 
 // Auth Types
+export type AccountType = 'INDIVIDUAL' | 'ORGANIZATION';
+
+/**
+ * Basic user profile persisted on the client-side session state.
+ */
 export interface User {
-  id: string;
   email: string;
-  name: string;
-  accountType: 'individual' | 'organization';
-  plan: 'free' | 'standard' | 'premium';
-  createdAt: string;
+  fullName: string;
+  userType: AccountType;
+  id?: string;
+  createdAt?: string;
 }
 
+/**
+ * Payload sent to the authentication endpoint.
+ */
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
+/**
+ * Payload used when registering a new account via the API.
+ */
 export interface RegisterData {
-  name: string;
+  fullName: string;
   email: string;
   password: string;
-  accountType: 'individual' | 'organization';
+  userType: AccountType;
+}
+
+/**
+ * Raw authentication response returned by the backend after a successful login.
+ */
+export interface AuthenticationResponse {
+  access_token: string;
+  email: string;
+  fullName: string;
+  userType: AccountType;
 }
 
 export interface AuthContextType {
