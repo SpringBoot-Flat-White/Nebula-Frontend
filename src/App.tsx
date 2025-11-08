@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import EnginesPage from './pages/EnginesPage';
 
 function App() {
   return (
@@ -19,6 +20,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/engines" 
+            element={
+              <ProtectedRoute>
+                <EnginesPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/engines/:engineId" 
+            element={
+              <ProtectedRoute>
+                <EnginesPage />
               </ProtectedRoute>
             } 
           />
