@@ -1,6 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData, AuthContextType } from '../types';
+import { loginRequest, registerRequest } from '../hooks/Auth';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -15,16 +18,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Check if user is logged in on mount
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('token');
+      // We store the user profile in localStorage while the JWT is stored
+      // as an HttpOnly cookie set by the backend. On mount we rehydrate
+      // the user from localStorage if present.
       const userData = localStorage.getItem('user');
 
-      if (token && userData) {
+      if (userData) {
         try {
-          const parsedUser = JSON.parse(userData);
+          const parsedUser = JSON.parse(userData) as User;
           setUser(parsedUser);
         } catch (error) {
           console.error('Error parsing user data:', error);
-          localStorage.removeItem('token');
           localStorage.removeItem('user');
         }
       }
@@ -34,92 +38,77 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
   }, []);
 
+  /**
+   * Perform login against the backend. The backend sets an HttpOnly cookie
+   * containing the JWT; the response body contains the user profile which
+   * we persist in localStorage for client rehydration.
+   */
   const login = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('http://your-api-url/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(credentials),
-      // });
-      // const data = await response.json();
+      const resp = await loginRequest(credentials);
 
-      // Simulated login for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const mockUser: User = {
-        id: '1',
-        email: credentials.email,
-        name: 'John Doe',
-        accountType: 'individual',
-        plan: 'free',
-        createdAt: new Date().toISOString(),
+      const newUser: User = {
+        email: resp.email,
+        fullName: resp.fullName,
+        userType: resp.userType,
       };
 
-      const mockToken = 'mock-jwt-token';
-
-      // Store in localStorage
-      localStorage.setItem('token', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-
-      setUser(mockUser);
+      // Persist user profile locally; token is stored in cookie by the server.
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setUser(newUser);
     } catch (error) {
       console.error('Login error:', error);
-      throw new Error('Login failed. Please check your credentials.');
+      throw error instanceof Error ? error : new Error('Login failed.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  /**
+   * Register a new user via the backend. Backend is expected to set the
+   * authentication cookie and return the created user's profile in the body.
+   */
   const register = async (data: RegisterData) => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('http://your-api-url/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
-      // const responseData = await response.json();
-
-      // Simulated registration for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const resp = await registerRequest(data);
 
       const newUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email: data.email,
-        name: data.name,
-        accountType: data.accountType,
-        plan: 'free',
-        createdAt: new Date().toISOString(),
+        email: resp.email,
+        fullName: resp.fullName,
+        userType: resp.userType,
       };
 
-      const mockToken = 'mock-jwt-token';
-
-      // Store in localStorage
-      localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(newUser));
-
       setUser(newUser);
     } catch (error) {
       console.error('Registration error:', error);
-      throw new Error('Registration failed. Please try again.');
+      throw error instanceof Error ? error : new Error('Registration failed.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    // TODO: Optional - call logout endpoint to invalidate token
-    // await fetch('http://your-api-url/auth/logout', {
-    //   method: 'POST',
-    //   headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-    // });
-
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
+  /**
+   * Logout the current user. If the backend exposes a logout endpoint that
+   * clears the authentication cookie, we call it. In any case we remove the
+   * local user profile so the UI updates immediately.
+   */
+  const logout = async () => {
+    try {
+      // Best-effort server logout; if this fails we still clear client state.
+      await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      // ignore errors from logout call
+      console.warn('Server logout failed or not available', err);
+    } finally {
+      localStorage.removeItem('user');
+      setUser(null);
+    }
   };
 
   const value: AuthContextType = {

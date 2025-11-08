@@ -64,7 +64,7 @@ const Header = () => {
                   onClick={() => setShowDropdown(!showDropdown)}
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 font-semibold transition-colors"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center">
+                  {/* <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
@@ -77,7 +77,7 @@ const Header = () => {
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  </svg> */}
                 </button>
 
                 {/* Dropdown Menu */}
