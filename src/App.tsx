@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import EnginesPage from './pages/EnginesPage';
+import PlansPage from './pages/PlansPage';
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/plans" 
+            element={
+              <ProtectedRoute>
+                <PlansPage />
               </ProtectedRoute>
             } 
           />

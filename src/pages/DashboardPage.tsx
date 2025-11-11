@@ -28,6 +28,14 @@ const DashboardPage = () => {
       icon: '🗄️',
       route: '/dashboard/engines',
       color: 'from-purple-500 to-blue-500'
+    },
+    {
+      id: 'plans',
+      name: 'Subscription Plans',
+      description: 'View and manage your plan',
+      icon: '💎',
+      route: '/dashboard/plans',
+      color: 'from-pink-500 to-purple-500'
     }
   ] : [];
 
@@ -137,6 +145,17 @@ const DashboardPage = () => {
                   <h3 className="font-bold text-xl mb-2">Database Engines</h3>
                   <p className="text-purple-100 text-sm">
                     Create and manage your database instances
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/dashboard/plans')}
+                  className="bg-gradient-to-br from-pink-500 to-purple-500 text-white p-6 rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left"
+                >
+                  <div className="text-4xl mb-3">💎</div>
+                  <h3 className="font-bold text-xl mb-2">Subscription Plans</h3>
+                  <p className="text-purple-100 text-sm">
+                    View and manage your subscription plan
                   </p>
                 </button>
               </div>
