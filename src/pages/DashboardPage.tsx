@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useInstances } from '../hooks/useInstances';
 
 interface DashboardOption {
   id: string;
@@ -13,21 +14,40 @@ interface DashboardOption {
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { instances, canCreateInstance } = useInstances();
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const getPlanLimit = (): number => {
+    const plan = user?.plan?.toUpperCase() || 'FREE';
+    switch (plan) {
+      case 'FREE': return 2;
+      case 'STANDARD': return 5;
+      case 'PREMIUM': return 10;
+      default: return 2;
+    }
+  };
+
   // Only show options for individual accounts
   const dashboardOptions: DashboardOption[] = user?.userType === 'INDIVIDUAL' ? [
     {
-      id: 'engines',
-      name: 'Database Engines',
+      id: 'instances',
+      name: 'Database Instances',
       description: 'Manage your database instances',
       icon: '',
-      route: '/dashboard/engines',
+      route: '/dashboard/instances',
       color: 'from-purple-500 to-blue-500'
+    },
+    {
+      id: 'engines',
+      name: 'Database Engines',
+      description: 'View instances by engine type',
+      icon: '',
+      route: '/dashboard/engines/all',
+      color: 'from-blue-500 to-indigo-500'
     },
     {
       id: 'plans',
@@ -120,9 +140,15 @@ const DashboardPage = () => {
               </div>
             </div>
             <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-purple-100">
-              <div className="text-sm text-gray-600 mb-1">Email</div>
-              <div className="text-lg font-semibold text-gray-900">
-                {user?.email}
+              <div className="text-sm text-gray-600 mb-1">Instances Used</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {instances.length} / {getPlanLimit()}
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${(instances.length / getPlanLimit()) * 100}%` }}
+                ></div>
               </div>
             </div>
           </div>
@@ -133,12 +159,28 @@ const DashboardPage = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <button
-                  onClick={() => navigate('/dashboard/engines')}
-                  className="bg-gradient-to-br from-purple-500 to-blue-500 text-white p-6 rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left"
+                  onClick={() => navigate('/dashboard/instances')}
+                  className={`p-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left ${
+                    canCreateInstance
+                      ? 'bg-gradient-to-br from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  <h3 className="font-bold text-xl mb-2">Database Instances</h3>
+                  <p className={`text-sm ${canCreateInstance ? 'text-purple-100' : 'text-gray-600'}`}>
+                    {canCreateInstance
+                      ? 'Create and manage your database instances'
+                      : `Limit reached (${instances.length}/${getPlanLimit()})`}
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/dashboard/engines/all')}
+                  className="bg-gradient-to-br from-blue-500 to-indigo-500 text-white p-6 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left"
                 >
                   <h3 className="font-bold text-xl mb-2">Database Engines</h3>
-                  <p className="text-purple-100 text-sm">
-                    Create and manage your database instances
+                  <p className="text-blue-100 text-sm">
+                    View and manage instances by engine type
                   </p>
                 </button>
 

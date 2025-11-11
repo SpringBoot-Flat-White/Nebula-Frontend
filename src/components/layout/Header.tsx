@@ -90,6 +90,31 @@ const Header = () => {
                     >
                       Dashboard
                     </Link>
+                    {user?.userType === 'INDIVIDUAL' && (
+                      <>
+                        <Link
+                          to="/dashboard/instances"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowDropdown(false)}
+                        >
+                          Database Instances
+                        </Link>
+                        <Link
+                          to="/dashboard/engines/all"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowDropdown(false)}
+                        >
+                          Database Engines
+                        </Link>
+                        <Link
+                          to="/dashboard/plans"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowDropdown(false)}
+                        >
+                          Subscription Plans
+                        </Link>
+                      </>
+                    )}
                     <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={handleLogout}

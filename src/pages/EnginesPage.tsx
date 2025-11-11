@@ -1,5 +1,10 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useInstances } from '../hooks/useInstances';
+import type { InstanceDetail, ContainerStatus } from '../types/database';
+import CreateInstanceModal from '../components/instances/CreateInstanceModal';
+import CredentialsModal from '../components/instances/CredentialsModal';
 
 interface DatabaseEngine {
   id: string;
@@ -65,15 +70,77 @@ const EnginesPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { engineId } = useParams();
+  const { instances, suspendInstance, resumeInstance, deleteInstance } = useInstances();
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [selectedInstance, setSelectedInstance] = useState<InstanceDetail | null>(null);
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const getStatusColor = (status: ContainerStatus): string => {
+    switch (status) {
+      case 'RUNNING':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'SUSPENDED':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'CREATING':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'DELETED':
+        return 'bg-red-100 text-red-800 border-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const handleSuspend = async (instance: InstanceDetail) => {
+    try {
+      setActionLoading(instance.id);
+      await suspendInstance(instance.id);
+    } catch (err) {
+      console.error('Error suspending instance:', err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleResume = async (instance: InstanceDetail) => {
+    try {
+      setActionLoading(instance.id);
+      await resumeInstance(instance.id);
+    } catch (err) {
+      console.error('Error resuming instance:', err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDelete = async (instance: InstanceDetail) => {
+    if (!confirm(`Are you sure you want to delete "${instance.name}"?`)) return;
+    
+    try {
+      setActionLoading(instance.id);
+      await deleteInstance(instance.id);
+    } catch (err) {
+      console.error('Error deleting instance:', err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   // Default to 'all' if no engineId is provided
   const currentEngineId = engineId || 'all';
   const selectedEngine = engines.find(e => e.id === currentEngineId);
+
+  // Filter instances by selected engine
+  const filteredInstances = currentEngineId === 'all'
+    ? instances
+    : instances.filter(inst => inst.engine.name.toLowerCase() === currentEngineId.toLowerCase());
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
@@ -160,23 +227,101 @@ const EnginesPage = () => {
                   <h2 className="text-2xl font-bold text-gray-900">
                     {selectedEngine.id === 'all' ? 'All Your Instances' : `Your ${selectedEngine.name} Instances`}
                   </h2>
-                  {selectedEngine.id !== 'all' && (
-                    <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                      + Create Instance
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => setShowCreateModal(true)}
+                    className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg transform bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:-translate-y-0.5"
+                  >
+                    + Create Instance
+                  </button>
                 </div>
 
-                {/* Empty State */}
-                <div className="text-center py-12">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No instances yet</h3>
-                  <p className="text-gray-600 mb-6">
-                    {selectedEngine.id === 'all' 
-                      ? 'Create your first database instance to get started'
-                      : `Create your first ${selectedEngine.name} instance to get started`
-                    }
-                  </p>
-                </div>
+                {filteredInstances.length === 0 ? (
+                  /* Empty State */
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No instances yet</h3>
+                    <p className="text-gray-600 mb-6">
+                      {selectedEngine.id === 'all' 
+                        ? 'Create your first database instance to get started'
+                        : `Create your first ${selectedEngine.name} instance to get started`
+                      }
+                    </p>
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className="inline-flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
+                    >
+                      + Create Your First Instance
+                    </button>
+                  </div>
+                ) : (
+                  /* Instance List */
+                  <div className="space-y-4">
+                    {filteredInstances.map((instance) => (
+                      <div
+                        key={instance.id}
+                        className="bg-gradient-to-r from-white to-purple-50 rounded-xl p-6 border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:shadow-lg"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <h3 className="text-xl font-bold text-gray-900">{instance.name}</h3>
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(instance.container.status)}`}>
+                                {instance.container.status}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                              <div>
+                                <span className="font-semibold">Engine:</span> {instance.engine.name}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Port:</span> {instance.container.port}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Created:</span> {new Date(instance.createdAt).toLocaleDateString()}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Last Updated:</span> {new Date(instance.updatedAt).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Action Buttons */}
+                          <div className="flex space-x-2 ml-4">
+                            {instance.container.status === 'RUNNING' ? (
+                              <button
+                                onClick={() => handleSuspend(instance)}
+                                disabled={actionLoading === instance.id}
+                                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                              >
+                                {actionLoading === instance.id ? 'Suspending...' : 'Suspend'}
+                              </button>
+                            ) : instance.container.status === 'SUSPENDED' ? (
+                              <button
+                                onClick={() => handleResume(instance)}
+                                disabled={actionLoading === instance.id}
+                                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                              >
+                                {actionLoading === instance.id ? 'Resuming...' : 'Resume'}
+                              </button>
+                            ) : null}
+                            
+                            <button
+                              onClick={() => handleDelete(instance)}
+                              disabled={actionLoading === instance.id || instance.container.status === 'DELETED'}
+                              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                            >
+                              {actionLoading === instance.id ? 'Deleting...' : 'Delete'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Coming Soon Features or All Engines Overview */}
@@ -228,6 +373,31 @@ const EnginesPage = () => {
           )}
         </main>
       </div>
+
+      {/* Modals */}
+      {showCreateModal && (
+        <CreateInstanceModal
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={(instance, password) => {
+            setSelectedInstance(instance);
+            setNewPassword(password);
+            setShowCreateModal(false);
+            setShowCredentialsModal(true);
+          }}
+        />
+      )}
+
+      {showCredentialsModal && selectedInstance && (
+        <CredentialsModal
+          instance={selectedInstance}
+          password={newPassword}
+          onClose={() => {
+            setShowCredentialsModal(false);
+            setSelectedInstance(null);
+            setNewPassword('');
+          }}
+        />
+      )}
     </div>
   );
 };
