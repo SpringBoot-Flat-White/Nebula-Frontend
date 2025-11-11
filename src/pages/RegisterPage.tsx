@@ -10,6 +10,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
 
   /**
@@ -19,16 +20,68 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
+    // Client-side validation
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName) {
+      setError('Please enter your full name.');
+      return;
+    }
+
+    if (trimmedName.length < 3) {
+      setError('Full name must be at least 3 characters long.');
+      return;
+    }
+
+    if (!trimmedEmail) {
+      setError('Please enter your email address.');
+      return;
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (!trimmedPassword) {
+      setError('Please enter a password.');
+      return;
+    }
+
+    if (trimmedPassword.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    // Password strength validation
+    const hasUpperCase = /[A-Z]/.test(trimmedPassword);
+    const hasLowerCase = /[a-z]/.test(trimmedPassword);
+    const hasNumber = /[0-9]/.test(trimmedPassword);
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setError('Password must contain uppercase, lowercase, and numbers.');
+      return;
+    }
+
+    if (trimmedPassword !== confirmPassword.trim()) {
       setError('Passwords do not match.');
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setError('You must accept the terms and conditions.');
       return;
     }
 
     try {
       await register({
-        fullName: fullName.trim(),
-        email: email.trim(),
-        password,
+        fullName: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword,
         userType: 'INDIVIDUAL',
       });
       navigate('/dashboard');
@@ -118,6 +171,22 @@ const RegisterPage = () => {
                 disabled={isLoading}
                 required
               />
+              {password && (
+                <div className="mt-2 text-xs space-y-1">
+                  <div className={password.length >= 8 ? 'text-green-600' : 'text-gray-400'}>
+                    ✓ At least 8 characters
+                  </div>
+                  <div className={/[A-Z]/.test(password) ? 'text-green-600' : 'text-gray-400'}>
+                    ✓ One uppercase letter
+                  </div>
+                  <div className={/[a-z]/.test(password) ? 'text-green-600' : 'text-gray-400'}>
+                    ✓ One lowercase letter
+                  </div>
+                  <div className={/[0-9]/.test(password) ? 'text-green-600' : 'text-gray-400'}>
+                    ✓ One number
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Confirm Password */}
@@ -143,8 +212,11 @@ const RegisterPage = () => {
               <input
                 type="checkbox"
                 id="terms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
                 className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 mt-1"
                 disabled={isLoading}
+                required
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                 I accept the{' '}
