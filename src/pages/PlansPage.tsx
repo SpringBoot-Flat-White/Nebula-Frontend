@@ -119,17 +119,12 @@ const PlansPage = () => {
                 onClick={() => navigate('/dashboard/engines')}
                 className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-white shadow-md hover:shadow-xl border border-purple-100"
               >
-                <div className="flex items-center space-x-3">
-                  <span className="text-3xl group-hover:scale-110 transition-transform">
-                    🗄️
-                  </span>
-                  <div>
-                    <div className="font-semibold text-gray-900 group-hover:text-white">
-                      Database Engines
-                    </div>
-                    <div className="text-xs text-gray-600 group-hover:text-purple-100">
-                      Manage instances
-                    </div>
+                <div>
+                  <div className="font-semibold text-gray-900 group-hover:text-white">
+                    Database Engines
+                  </div>
+                  <div className="text-xs text-gray-600 group-hover:text-purple-100">
+                    Manage instances
                   </div>
                 </div>
               </button>
@@ -137,17 +132,12 @@ const PlansPage = () => {
               <button
                 className="w-full text-left px-4 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white transition-all duration-200 shadow-xl border border-purple-100"
               >
-                <div className="flex items-center space-x-3">
-                  <span className="text-3xl">
-                    💎
-                  </span>
-                  <div>
-                    <div className="font-semibold">
-                      Subscription Plans
-                    </div>
-                    <div className="text-xs text-purple-100">
-                      Manage your plan
-                    </div>
+                <div>
+                  <div className="font-semibold">
+                    Subscription Plans
+                  </div>
+                  <div className="text-xs text-purple-100">
+                    Manage your plan
                   </div>
                 </div>
               </button>
@@ -169,19 +159,12 @@ const PlansPage = () => {
 
           {/* Current Plan Info */}
           <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-2xl p-8 mb-8 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100 mb-1">Your Current Plan</p>
-                <h2 className="text-4xl font-bold mb-2">{currentPlan}</h2>
-                <p className="text-purple-100">
-                  {plans.find(p => p.name.toUpperCase() === currentPlan)?.instances || 0} instances available
-                </p>
-              </div>
-              <div className="text-6xl">
-                {currentPlan === 'FREE' && '🆓'}
-                {currentPlan === 'STANDARD' && '⭐'}
-                {currentPlan === 'PREMIUM' && '👑'}
-              </div>
+            <div>
+              <p className="text-purple-100 mb-1">Your Current Plan</p>
+              <h2 className="text-4xl font-bold mb-2">{currentPlan}</h2>
+              <p className="text-purple-100">
+                {plans.find(p => p.name.toUpperCase() === currentPlan)?.instances || 0} instances available
+              </p>
             </div>
           </div>
 
@@ -206,8 +189,11 @@ const PlansPage = () => {
                     {/* Current Plan Badge */}
                     {isCurrent && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <span className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                          ✓ Current Plan
+                        <span className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Current Plan
                         </span>
                       </div>
                     )}
@@ -284,7 +270,6 @@ const PlansPage = () => {
           {/* Additional Info */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-purple-100">
             <div className="text-center">
-              <div className="text-4xl mb-4">💡</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Need Help Choosing?</h3>
               <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
                 All plans include access to all database engines, secure credentials, and our standard features. 
@@ -292,17 +277,14 @@ const PlansPage = () => {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                 <div className="p-4 bg-purple-50 rounded-xl">
-                  <div className="text-2xl mb-2">🚀</div>
                   <h4 className="font-bold text-gray-900 mb-1">Instant Activation</h4>
                   <p className="text-sm text-gray-600">Upgrades are applied immediately</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-xl">
-                  <div className="text-2xl mb-2">🔒</div>
                   <h4 className="font-bold text-gray-900 mb-1">Secure Payments</h4>
                   <p className="text-sm text-gray-600">Your data is always protected</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-xl">
-                  <div className="text-2xl mb-2">🔄</div>
                   <h4 className="font-bold text-gray-900 mb-1">Flexible Changes</h4>
                   <p className="text-sm text-gray-600">Change plans anytime you need</p>
                 </div>

@@ -5,37 +5,37 @@ const DatabaseEngines = () => {
     {
       id: 'mysql',
       name: 'MySQL',
-      icon: '🐬',
+      icon: '',
       description: 'The world\'s most popular open source relational database.',
     },
     {
       id: 'postgresql',
       name: 'PostgreSQL',
-      icon: '🐘',
+      icon: '',
       description: 'Advanced object-relational database management system.',
     },
     {
       id: 'mongodb',
       name: 'MongoDB',
-      icon: '🍃',
+      icon: '',
       description: 'Document-oriented NoSQL database, flexible and scalable.',
     },
     {
       id: 'redis',
       name: 'Redis',
-      icon: '⚡',
+      icon: '',
       description: 'In-memory data structure store, ultra-fast.',
     },
     {
       id: 'sqlserver',
       name: 'SQL Server',
-      icon: '🏢',
+      icon: '',
       description: 'Microsoft\'s enterprise database management system.',
     },
     {
       id: 'cassandra',
       name: 'Cassandra',
-      icon: '🌟',
+      icon: '',
       description: 'Distributed NoSQL database, highly scalable.',
     },
   ];
@@ -60,9 +60,6 @@ const DatabaseEngines = () => {
               key={engine.id}
               className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 border-2 border-transparent hover:border-primary-500 group"
             >
-              <div className="text-6xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                {engine.icon}
-              </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
                 {engine.name}
               </h3>

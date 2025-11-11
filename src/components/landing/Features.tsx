@@ -6,37 +6,37 @@ const Features = () => {
       id: '1',
       title: 'Instant Deployment',
       description: 'Create database instances in seconds. Docker containers ready to use.',
-      icon: '⚡',
+      icon: '',
     },
     {
       id: '2',
       title: 'Secure Credentials',
       description: 'Automatic credential generation. Encrypted passwords and rotation available.',
-      icon: '🔐',
+      icon: '',
     },
     {
       id: '3',
       title: 'Multi-Engine',
       description: 'Support for MySQL, PostgreSQL, MongoDB, Redis, Cassandra and SQL Server.',
-      icon: '🗄️',
+      icon: '',
     },
     {
       id: '4',
       title: 'Complete Management',
       description: 'Suspend, resume, delete or rotate passwords from your dashboard.',
-      icon: '🎮',
+      icon: '',
     },
     {
       id: '5',
       title: 'Flexible Plans',
       description: 'From free plan to Premium. Scale according to your needs.',
-      icon: '💎',
+      icon: '',
     },
     {
       id: '6',
       title: 'High Availability',
       description: 'Dedicated VPS with 24/7 monitoring. Your data always available.',
-      icon: '🌐',
+      icon: '',
     },
   ];
 
@@ -60,9 +60,6 @@ const Features = () => {
               key={feature.id}
               className="card group hover:scale-105 transition-transform duration-300"
             >
-              <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                {feature.icon}
-              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {feature.title}
               </h3>

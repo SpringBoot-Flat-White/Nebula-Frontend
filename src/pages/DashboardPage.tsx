@@ -25,7 +25,7 @@ const DashboardPage = () => {
       id: 'engines',
       name: 'Database Engines',
       description: 'Manage your database instances',
-      icon: '🗄️',
+      icon: '',
       route: '/dashboard/engines',
       color: 'from-purple-500 to-blue-500'
     },
@@ -33,7 +33,7 @@ const DashboardPage = () => {
       id: 'plans',
       name: 'Subscription Plans',
       description: 'View and manage your plan',
-      icon: '💎',
+      icon: '',
       route: '/dashboard/plans',
       color: 'from-pink-500 to-purple-500'
     }
@@ -78,17 +78,12 @@ const DashboardPage = () => {
                     onClick={() => navigate(option.route)}
                     className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-white shadow-md hover:shadow-xl border border-purple-100"
                   >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-3xl group-hover:scale-110 transition-transform">
-                        {option.icon}
-                      </span>
-                      <div>
-                        <div className="font-semibold text-gray-900 group-hover:text-white">
-                          {option.name}
-                        </div>
-                        <div className="text-xs text-gray-600 group-hover:text-purple-100">
-                          {option.description}
-                        </div>
+                    <div>
+                      <div className="font-semibold text-gray-900 group-hover:text-white">
+                        {option.name}
+                      </div>
+                      <div className="text-xs text-gray-600 group-hover:text-purple-100">
+                        {option.description}
                       </div>
                     </div>
                   </button>
@@ -103,7 +98,7 @@ const DashboardPage = () => {
           {/* Welcome Section */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-8 border border-purple-100">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-              Welcome, {user?.fullName}! 👋
+              Welcome, {user?.fullName}!
             </h1>
             <p className="text-xl text-gray-600">
               This is your dashboard. Here you'll manage your database instances.
@@ -141,7 +136,6 @@ const DashboardPage = () => {
                   onClick={() => navigate('/dashboard/engines')}
                   className="bg-gradient-to-br from-purple-500 to-blue-500 text-white p-6 rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left"
                 >
-                  <div className="text-4xl mb-3">🗄️</div>
                   <h3 className="font-bold text-xl mb-2">Database Engines</h3>
                   <p className="text-purple-100 text-sm">
                     Create and manage your database instances
@@ -152,7 +146,6 @@ const DashboardPage = () => {
                   onClick={() => navigate('/dashboard/plans')}
                   className="bg-gradient-to-br from-pink-500 to-purple-500 text-white p-6 rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 text-left"
                 >
-                  <div className="text-4xl mb-3">💎</div>
                   <h3 className="font-bold text-xl mb-2">Subscription Plans</h3>
                   <p className="text-purple-100 text-sm">
                     View and manage your subscription plan
@@ -164,7 +157,6 @@ const DashboardPage = () => {
 
           {/* Coming Soon Section */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center border border-purple-100">
-            <div className="text-6xl mb-4">🚀</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Coming Soon</h2>
             <p className="text-gray-600">
               Instance management features will be implemented here, including:
