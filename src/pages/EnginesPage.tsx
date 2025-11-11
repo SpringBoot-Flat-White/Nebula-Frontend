@@ -15,49 +15,49 @@ const engines: DatabaseEngine[] = [
     name: 'All Engines',
     description: 'View all database instances',
     color: 'from-purple-600 to-blue-600',
-    icon: '🗃️'
+    icon: ''
   },
   {
     id: 'mysql',
     name: 'MySQL',
     description: 'Open-source relational database',
     color: 'from-blue-500 to-blue-600',
-    icon: '🐬'
+    icon: ''
   },
   {
     id: 'sqlserver',
     name: 'SQL Server',
     description: 'Microsoft enterprise database',
     color: 'from-red-500 to-red-600',
-    icon: '🗄️'
+    icon: ''
   },
   {
     id: 'postgresql',
     name: 'PostgreSQL',
     description: 'Advanced open-source database',
     color: 'from-indigo-500 to-blue-500',
-    icon: '🐘'
+    icon: ''
   },
   {
     id: 'redis',
     name: 'Redis',
     description: 'In-memory data structure store',
     color: 'from-red-600 to-orange-500',
-    icon: '⚡'
+    icon: ''
   },
   {
     id: 'cassandra',
     name: 'Cassandra',
     description: 'Distributed NoSQL database',
     color: 'from-purple-500 to-pink-500',
-    icon: '💎'
+    icon: ''
   },
   {
     id: 'mongodb',
     name: 'MongoDB',
     description: 'Document-oriented NoSQL database',
     color: 'from-green-500 to-green-600',
-    icon: '🍃'
+    icon: ''
   }
 ];
 
@@ -122,13 +122,12 @@ const EnginesPage = () => {
                 <button
                   key={engine.id}
                   onClick={() => navigate(`/dashboard/engines/${engine.id}`)}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                     currentEngineId === engine.id
                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
                       : 'hover:bg-purple-50 text-gray-700'
                   }`}
                 >
-                  <span className="text-2xl">{engine.icon}</span>
                   <span className="font-medium">{engine.name}</span>
                 </button>
               ))}
@@ -143,8 +142,8 @@ const EnginesPage = () => {
               {/* Engine Header */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-8 border border-purple-100">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${selectedEngine.color} rounded-xl flex items-center justify-center text-4xl shadow-lg`}>
-                    {selectedEngine.icon}
+                  <div className={`w-16 h-16 bg-gradient-to-br ${selectedEngine.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                    <span className="text-white font-bold text-2xl">{selectedEngine.name.charAt(0)}</span>
                   </div>
                   <div>
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -170,7 +169,6 @@ const EnginesPage = () => {
 
                 {/* Empty State */}
                 <div className="text-center py-12">
-                  <div className="text-6xl mb-4">📦</div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">No instances yet</h3>
                   <p className="text-gray-600 mb-6">
                     {selectedEngine.id === 'all' 
@@ -192,8 +190,8 @@ const EnginesPage = () => {
                       className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-all hover:scale-105 text-left group"
                     >
                       <div className="flex items-center space-x-4 mb-3">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${engine.color} rounded-lg flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform`}>
-                          {engine.icon}
+                        <div className={`w-12 h-12 bg-gradient-to-br ${engine.color} rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                          <span className="text-white font-bold text-xl">{engine.name.charAt(0)}</span>
                         </div>
                         <div>
                           <h4 className="font-bold text-gray-900 text-lg">{engine.name}</h4>
@@ -206,17 +204,14 @@ const EnginesPage = () => {
               ) : (
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <div className="text-3xl mb-3">⚙️</div>
                     <h3 className="font-bold text-gray-900 mb-2">Instance Management</h3>
                     <p className="text-gray-600 text-sm">Start, stop, and configure your database instances</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <div className="text-3xl mb-3">🔐</div>
                     <h3 className="font-bold text-gray-900 mb-2">Credentials</h3>
                     <p className="text-gray-600 text-sm">View and manage connection credentials securely</p>
                   </div>
                   <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <div className="text-3xl mb-3">📊</div>
                     <h3 className="font-bold text-gray-900 mb-2">Monitoring</h3>
                     <p className="text-gray-600 text-sm">Track performance and usage metrics</p>
                   </div>
@@ -225,7 +220,6 @@ const EnginesPage = () => {
             </div>
           ) : (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-purple-100">
-              <div className="text-6xl mb-4">🎯</div>
               <h2 className="text-3xl font-bold text-gray-900 mb-3">Select a Database Engine</h2>
               <p className="text-gray-600 text-lg">
                 Choose a database engine from the sidebar to manage your instances

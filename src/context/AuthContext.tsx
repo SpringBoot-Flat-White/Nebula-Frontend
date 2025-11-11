@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: resp.email,
         fullName: resp.fullName,
         userType: resp.userType,
+        plan: resp.plan || 'FREE', // Default to FREE if not provided by backend
       };
 
       // Persist user profile locally; token is stored in cookie by the server.
@@ -78,6 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: resp.email,
         fullName: resp.fullName,
         userType: resp.userType,
+        plan: resp.plan || 'FREE', // Default to FREE if not provided by backend
       };
 
       localStorage.setItem('user', JSON.stringify(newUser));

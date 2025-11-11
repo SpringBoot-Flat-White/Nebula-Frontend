@@ -23,6 +23,7 @@ export interface Feature {
 
 // Auth Types
 export type AccountType = 'INDIVIDUAL' | 'ORGANIZATION';
+export type PlanType = 'FREE' | 'STANDARD' | 'PREMIUM';
 
 /**
  * Basic user profile persisted on the client-side session state.
@@ -31,6 +32,7 @@ export interface User {
   email: string;
   fullName: string;
   userType: AccountType;
+  plan?: PlanType; // Optional for backward compatibility
   id?: string;
   createdAt?: string;
 }
@@ -61,6 +63,7 @@ export interface AuthenticationResponse {
   email: string;
   fullName: string;
   userType: AccountType;
+  plan?: PlanType; // Optional until backend is updated
 }
 
 export interface AuthContextType {
