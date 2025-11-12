@@ -33,8 +33,8 @@ export interface User {
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional for backward compatibility
-  id?: string;
-  createdAt?: string;
+  planId: number;
+  userId: number;
 }
 
 /**
@@ -64,6 +64,9 @@ export interface AuthenticationResponse {
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional until backend is updated
+  planId: number;
+  userId: number;
+  
 }
 
 export interface AuthContextType {
