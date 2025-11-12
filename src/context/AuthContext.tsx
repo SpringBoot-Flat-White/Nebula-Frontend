@@ -113,6 +113,80 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  /**
+   * Handle OAuth callback. This is called when the user is redirected back
+   * from the OAuth provider. The JWT is already set as an HttpOnly cookie.
+   * We create a basic user profile that will be completed later if needed.
+   */
+  const handleOAuthCallback = async (email: string) => {
+    setIsLoading(true);
+    try {
+      // Create a basic user profile with the email from the callback
+      // The JWT is already stored as an HttpOnly cookie by the backend
+      const newUser: User = {
+        email: email,
+        fullName: '', // Will be filled when completing profile or from backend
+        userType: 'INDIVIDUAL',
+        plan: 'FREE',
+      };
+
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setUser(newUser);
+    } catch (error) {
+      console.error('OAuth callback error:', error);
+      throw error instanceof Error ? error : new Error('OAuth authentication failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Complete the user profile after OAuth registration.
+   * This is called when a new OAuth user needs to provide their full name.
+   */
+  const completeProfile = async (email: string, fullName: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/complete-profile?email=${encodeURIComponent(email)}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ fullName }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || 
+          errorData.error || 
+          'Failed to complete profile'
+        );
+      }
+
+      const userData = await response.json();
+
+      const updatedUser: User = {
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: user?.userType || 'INDIVIDUAL',
+        plan: user?.plan || 'FREE',
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Complete profile error:', error);
+      throw error instanceof Error ? error : new Error('Failed to complete profile.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
@@ -120,6 +194,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     register,
     logout,
+    handleOAuthCallback,
+    completeProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

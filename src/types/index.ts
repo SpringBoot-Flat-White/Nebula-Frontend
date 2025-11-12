@@ -73,4 +73,6 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  handleOAuthCallback: (email: string) => Promise<void>;
+  completeProfile: (email: string, fullName: string) => Promise<void>;
 }

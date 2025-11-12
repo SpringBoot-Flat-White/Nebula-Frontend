@@ -9,6 +9,8 @@ import DashboardPage from './pages/DashboardPage';
 import InstancesPage from './pages/InstancesPage';
 import EnginesPage from './pages/EnginesPage';
 import PlansPage from './pages/PlansPage';
+import OAuthCallbackPage from './pages/OAuthCallbackPage';
+import CompleteProfilePage from './pages/CompleteProfilePage';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth/callback" element={<OAuthCallbackPage />} />
+          <Route path="/complete-profile" element={<CompleteProfilePage />} />
           <Route 
             path="/dashboard" 
             element={

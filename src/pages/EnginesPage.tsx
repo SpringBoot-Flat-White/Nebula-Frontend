@@ -86,15 +86,15 @@ const EnginesPage = () => {
   const getStatusColor = (status: ContainerStatus): string => {
     switch (status) {
       case 'RUNNING':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-900/50 text-green-400 border-green-700';
       case 'SUSPENDED':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-900/50 text-yellow-400 border-yellow-700';
       case 'CREATING':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-900/50 text-blue-400 border-blue-700';
       case 'DELETED':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-900/50 text-red-400 border-red-700';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-800 text-gray-400 border-gray-700';
     }
   };
 
@@ -143,22 +143,22 @@ const EnginesPage = () => {
     : instances.filter(inst => inst.engine.name.toLowerCase() === currentEngineId.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-purple-100">
+      <header className="bg-gray-900/95 backdrop-blur-sm shadow-2xl sticky top-0 z-50 border-b border-gray-800">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/50">
                 <span className="text-white font-bold text-xl">N</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Nebula
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="text-gray-700 hover:text-purple-600 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-purple-50"
+              className="text-gray-300 hover:text-purple-400 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-gray-800"
             >
               Logout
             </button>
@@ -168,19 +168,19 @@ const EnginesPage = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white/80 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-lg border-r border-purple-100">
+        <aside className="w-64 bg-gray-900/95 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-2xl border-r border-gray-800">
           <div className="p-6">
             <div className="mb-6">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center text-gray-600 hover:text-purple-600 transition-colors mb-4"
+                className="flex items-center text-gray-400 hover:text-purple-400 transition-colors mb-4"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 Back to Dashboard
               </button>
-              <h2 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h2 className="text-lg font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Database Engines
               </h2>
             </div>
@@ -191,8 +191,8 @@ const EnginesPage = () => {
                   onClick={() => navigate(`/dashboard/engines/${engine.id}`)}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                     currentEngineId === engine.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                      : 'hover:bg-purple-50 text-gray-700'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/50'
+                      : 'hover:bg-gray-800 text-gray-300 border border-gray-800'
                   }`}
                 >
                   <span className="font-medium">{engine.name}</span>
@@ -207,29 +207,29 @@ const EnginesPage = () => {
           {selectedEngine ? (
             <div>
               {/* Engine Header */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-8 border border-purple-100">
+              <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-8 mb-8 border border-gray-800">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${selectedEngine.color} rounded-xl flex items-center justify-center shadow-lg`}>
+                  <div className={`w-16 h-16 bg-gradient-to-br ${selectedEngine.color} rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50`}>
                     <span className="text-white font-bold text-2xl">{selectedEngine.name.charAt(0)}</span>
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                       {selectedEngine.name}
                     </h1>
-                    <p className="text-gray-600 text-lg">{selectedEngine.description}</p>
+                    <p className="text-gray-300 text-lg">{selectedEngine.description}</p>
                   </div>
                 </div>
               </div>
 
               {/* Instances Section */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-purple-100">
+              <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-8 border border-gray-800">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-white">
                     {selectedEngine.id === 'all' ? 'All Your Instances' : `Your ${selectedEngine.name} Instances`}
                   </h2>
                   <button 
                     onClick={() => setShowCreateModal(true)}
-                    className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg transform bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:-translate-y-0.5"
+                    className="px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg shadow-purple-500/50 transform bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:-translate-y-0.5"
                   >
                     + Create Instance
                   </button>
@@ -238,13 +238,13 @@ const EnginesPage = () => {
                 {filteredInstances.length === 0 ? (
                   /* Empty State */
                   <div className="text-center py-12">
-                    <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-700">
+                      <svg className="w-10 h-10 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No instances yet</h3>
-                    <p className="text-gray-600 mb-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">No instances yet</h3>
+                    <p className="text-gray-300 mb-6">
                       {selectedEngine.id === 'all' 
                         ? 'Create your first database instance to get started'
                         : `Create your first ${selectedEngine.name} instance to get started`
@@ -252,7 +252,7 @@ const EnginesPage = () => {
                     </p>
                     <button
                       onClick={() => setShowCreateModal(true)}
-                      className="inline-flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
+                      className="inline-flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg shadow-purple-500/50 bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       + Create Your First Instance
                     </button>
@@ -263,19 +263,19 @@ const EnginesPage = () => {
                     {filteredInstances.map((instance) => (
                       <div
                         key={instance.id}
-                        className="bg-gradient-to-r from-white to-purple-50 rounded-xl p-6 border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:shadow-lg"
+                        className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
-                              <h3 className="text-xl font-bold text-gray-900">{instance.name}</h3>
+                              <h3 className="text-xl font-bold text-white">{instance.name}</h3>
                               <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(instance.container.status)}`}>
                                 {instance.container.status}
                               </span>
                             </div>
-                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
                               <div>
-                                <span className="font-semibold">Engine:</span> {instance.engine.name}
+                                <span className="font-semibold text-gray-300">Engine:</span> {instance.engine.name}
                               </div>
                               <div>
                                 <span className="font-semibold">Port:</span> {instance.container.port}

@@ -36,15 +36,15 @@ const InstancesPage = () => {
   const getStatusColor = (status: ContainerStatus): string => {
     switch (status) {
       case 'RUNNING':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-900/50 text-green-400 border-green-700';
       case 'SUSPENDED':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-900/50 text-yellow-400 border-yellow-700';
       case 'CREATING':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-900/50 text-blue-400 border-blue-700';
       case 'DELETED':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-900/50 text-red-400 border-red-700';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-800 text-gray-400 border-gray-700';
     }
   };
 
@@ -115,22 +115,22 @@ const InstancesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-purple-100">
+      <header className="bg-gray-900/95 backdrop-blur-sm shadow-2xl sticky top-0 z-50 border-b border-gray-800">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/50">
                 <span className="text-white font-bold text-xl">N</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Nebula
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="text-gray-700 hover:text-purple-600 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-purple-50"
+              className="text-gray-300 hover:text-purple-400 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-gray-800"
             >
               Logout
             </button>
@@ -140,11 +140,11 @@ const InstancesPage = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white/80 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-lg border-r border-purple-100">
+        <aside className="w-64 bg-gray-900/95 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-2xl border-r border-gray-800">
           <div className="p-6">
             <button
               onClick={() => navigate('/dashboard')}
-              className="flex items-center text-gray-600 hover:text-purple-600 transition-colors mb-6"
+              className="flex items-center text-gray-400 hover:text-purple-400 transition-colors mb-6"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -152,13 +152,13 @@ const InstancesPage = () => {
               Back to Dashboard
             </button>
             
-            <h2 className="text-lg font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h2 className="text-lg font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               Quick Access
             </h2>
             
             <nav className="space-y-3">
               <button
-                className="w-full text-left px-4 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white transition-all duration-200 shadow-xl border border-purple-100"
+                className="w-full text-left px-4 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white transition-all duration-200 shadow-lg shadow-purple-500/50 border border-purple-500"
               >
                 <div className="font-semibold">Database Instances</div>
                 <div className="text-xs text-purple-100">Manage instances</div>
@@ -166,10 +166,10 @@ const InstancesPage = () => {
 
               <button
                 onClick={() => navigate('/dashboard/plans')}
-                className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-white shadow-md hover:shadow-xl border border-purple-100"
+                className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-gray-800/50 shadow-lg hover:shadow-purple-500/50 border border-gray-700 hover:border-purple-500"
               >
-                <div className="font-semibold text-gray-900 group-hover:text-white">Subscription Plans</div>
-                <div className="text-xs text-gray-600 group-hover:text-purple-100">Manage your plan</div>
+                <div className="font-semibold text-gray-100 group-hover:text-white">Subscription Plans</div>
+                <div className="text-xs text-gray-400 group-hover:text-purple-100">Manage your plan</div>
               </button>
             </nav>
           </div>
@@ -178,19 +178,19 @@ const InstancesPage = () => {
         {/* Main Content */}
         <main className="flex-1 p-8">
           {/* Page Header */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-8 border border-purple-100">
+          <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-8 mb-8 border border-gray-800">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2">
                   Database Instances
                 </h1>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-gray-300">
                   Manage your database instances
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-600 mb-1">Instances Used</div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <div className="text-sm text-gray-400 mb-1">Instances Used</div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                   {instances.length} / {getPlanLimit()}
                 </div>
               </div>
@@ -198,9 +198,9 @@ const InstancesPage = () => {
 
             {/* Progress Bar */}
             <div className="mt-4">
-              <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className="w-full bg-gray-700 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full transition-all duration-300 shadow-lg shadow-purple-500/50"
                   style={{ width: `${(instances.length / getPlanLimit()) * 100}%` }}
                 ></div>
               </div>
@@ -214,8 +214,8 @@ const InstancesPage = () => {
               disabled={!canCreateInstance}
               className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg ${
                 canCreateInstance
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl transform hover:-translate-y-0.5'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:shadow-purple-500/50 transform hover:-translate-y-0.5'
+                  : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
               }`}
             >
               {canCreateInstance ? '+ Create New Instance' : `Limit Reached (Upgrade Plan)`}
@@ -231,17 +231,17 @@ const InstancesPage = () => {
 
           {/* Loading State */}
           {loading && instances.length === 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-purple-100">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading instances...</p>
+            <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-12 text-center border border-gray-800">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+              <p className="text-gray-300">Loading instances...</p>
             </div>
           )}
 
           {/* Instances List */}
           {!loading && instances.length === 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-purple-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">No instances yet</h3>
-              <p className="text-gray-600 mb-6">
+            <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-12 text-center border border-gray-800">
+              <h3 className="text-2xl font-bold text-white mb-2">No instances yet</h3>
+              <p className="text-gray-300 mb-6">
                 Create your first database instance to get started
               </p>
             </div>
@@ -252,17 +252,17 @@ const InstancesPage = () => {
               {instances.map((instance) => (
                 <div
                   key={instance.id}
-                  className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-purple-100"
+                  className="bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 p-6 border border-gray-800 hover:border-gray-700"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-2xl font-bold text-gray-900">{instance.name}</h3>
+                        <h3 className="text-2xl font-bold text-white">{instance.name}</h3>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(instance.status)}`}>
                           {instance.status}
                         </span>
                       </div>
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-gray-300 mb-2">
                         <span className="font-semibold">{instance.engine.name}</span>
                       </p>
                       <p className="text-sm text-gray-500">
@@ -272,30 +272,30 @@ const InstancesPage = () => {
                   </div>
 
                   {/* Connection Info */}
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <h4 className="font-semibold text-gray-900 mb-3">Connection Details</h4>
+                  <div className="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-700">
+                    <h4 className="font-semibold text-white mb-3">Connection Details</h4>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <span className="text-gray-600">Host:</span>
-                        <span className="ml-2 font-mono font-semibold text-gray-900">
+                        <span className="text-gray-400">Host:</span>
+                        <span className="ml-2 font-mono font-semibold text-gray-200">
                           {instance.credentials?.host}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Port:</span>
-                        <span className="ml-2 font-mono font-semibold text-gray-900">
+                        <span className="text-gray-400">Port:</span>
+                        <span className="ml-2 font-mono font-semibold text-gray-200">
                           {instance.credentials?.port}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Database:</span>
-                        <span className="ml-2 font-mono font-semibold text-gray-900">
+                        <span className="text-gray-400">Database:</span>
+                        <span className="ml-2 font-mono font-semibold text-gray-200">
                           {instance.credentials?.database}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Username:</span>
-                        <span className="ml-2 font-mono font-semibold text-gray-900">
+                        <span className="text-gray-400">Username:</span>
+                        <span className="ml-2 font-mono font-semibold text-gray-200">
                           {instance.credentials?.username}
                         </span>
                       </div>
