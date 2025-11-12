@@ -52,14 +52,14 @@ const Pricing = () => {
   ];
 
   return (
-    <section id="pricing" className="py-20 bg-white">
+    <section id="pricing" className="py-20 bg-gradient-to-br from-black via-gray-900 to-slate-900">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text">Plans</span> for every need
+            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Plans</span> <span className="text-gray-100">for every need</span>
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-300">
             Start free and scale when you need
           </p>
         </div>
@@ -69,36 +69,36 @@ const Pricing = () => {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`relative rounded-2xl border-2 p-8 transition-all duration-300 ${
+              className={`relative rounded-2xl border-2 p-8 transition-all duration-300 backdrop-blur-sm ${
                 plan.popular
-                  ? 'border-primary-500 shadow-2xl scale-105 bg-gradient-to-br from-primary-50 to-secondary-50'
-                  : 'border-gray-200 hover:border-primary-300 hover:shadow-xl bg-white'
+                  ? 'border-purple-500 shadow-2xl shadow-purple-500/30 scale-105 bg-gradient-to-br from-purple-900/30 to-blue-900/30'
+                  : 'border-gray-800 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20 bg-gray-900/80'
               }`}
             >
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                  <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg shadow-purple-500/50">
                     Most Popular
                   </span>
                 </div>
               )}
 
               {/* Plan Name */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+              <h3 className="text-2xl font-bold text-gray-100 mb-2">{plan.name}</h3>
 
               {/* Price */}
               <div className="mb-6">
-                <span className="text-5xl font-bold gradient-text">
+                <span className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                   ${plan.price}
                 </span>
-                <span className="text-gray-600 ml-2">/month</span>
+                <span className="text-gray-400 ml-2">/month</span>
               </div>
 
               {/* Instances */}
-              <div className="mb-6 pb-6 border-b border-gray-200">
-                <p className="text-gray-700 font-semibold">
-                  <span className="text-2xl gradient-text">{plan.instances}</span> instances
+              <div className="mb-6 pb-6 border-b border-gray-700">
+                <p className="text-gray-300 font-semibold">
+                  <span className="text-2xl bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">{plan.instances}</span> instances
                 </p>
               </div>
 
@@ -107,7 +107,7 @@ const Pricing = () => {
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <svg
-                      className="w-5 h-5 text-primary-600 mr-3 mt-0.5 flex-shrink-0"
+                      className="w-5 h-5 text-purple-400 mr-3 mt-0.5 flex-shrink-0"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -117,7 +117,7 @@ const Pricing = () => {
                     >
                       <path d="M5 13l4 4L19 7"></path>
                     </svg>
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-gray-300">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -127,8 +127,8 @@ const Pricing = () => {
                 to="/register"
                 className={`block w-full text-center py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
                   plan.popular
-                    ? 'btn-primary'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    ? 'btn-primary shadow-lg shadow-purple-500/50'
+                    : 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-700'
                 }`}
               >
                 {plan.price === 0 ? 'Get Started Free' : 'Get Started'}

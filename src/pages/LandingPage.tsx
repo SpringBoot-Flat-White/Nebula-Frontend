@@ -8,7 +8,7 @@ import CTA from '../components/landing/CTA';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Header />
       <main>
         <Hero />
