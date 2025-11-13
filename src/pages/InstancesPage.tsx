@@ -50,8 +50,8 @@ const InstancesPage = () => {
 
   const handleSuspend = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.id);
-      await suspendInstance(instance.id);
+      setActionLoading(instance.idInstance);
+      await suspendInstance(instance.idInstance);
     } catch (err) {
       console.error('Error suspending instance:', err);
     } finally {
@@ -61,8 +61,8 @@ const InstancesPage = () => {
 
   const handleResume = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.id);
-      await resumeInstance(instance.id);
+      setActionLoading(instance.idInstance);
+      await resumeInstance(instance.idInstance);
     } catch (err) {
       console.error('Error resuming instance:', err);
     } finally {
@@ -79,8 +79,8 @@ const InstancesPage = () => {
     if (!selectedInstance) return;
     
     try {
-      setActionLoading(selectedInstance.id);
-      await deleteInstance(selectedInstance.id);
+      setActionLoading(selectedInstance.idInstance);
+      await deleteInstance(selectedInstance.idInstance);
       setShowDeleteModal(false);
       setSelectedInstance(null);
     } catch (err) {
@@ -92,8 +92,8 @@ const InstancesPage = () => {
 
   const handleRotatePassword = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.id);
-      const password = await rotatePassword(instance.id);
+      setActionLoading(instance.idInstance);
+      const password = await rotatePassword(instance.idInstance);
       setNewPassword(password);
       setSelectedInstance(instance);
       setShowCredentialsModal(true);
@@ -251,19 +251,19 @@ const InstancesPage = () => {
             <div className="grid grid-cols-1 gap-6">
               {instances.map((instance) => (
                 <div
-                  key={instance.id}
+                  key={instance.idInstance}
                   className="bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 p-6 border border-gray-800 hover:border-gray-700"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-2xl font-bold text-white">{instance.name}</h3>
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(instance.status)}`}>
-                          {instance.status}
+                        <h3 className="text-2xl font-bold text-white">{instance.databaseName}</h3>
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${instance.status ? getStatusColor(instance.status as ContainerStatus) : 'bg-gray-800 text-gray-400 border-gray-700'}`}>
+                          {instance.status || 'UNKNOWN'}
                         </span>
                       </div>
                       <p className="text-gray-300 mb-2">
-                        <span className="font-semibold">{instance.engine.name}</span>
+                        <span className="font-semibold">{instance.engineName}</span>
                       </p>
                       <p className="text-sm text-gray-500">
                         Created: {new Date(instance.createdAt).toLocaleString()}
@@ -278,25 +278,25 @@ const InstancesPage = () => {
                       <div>
                         <span className="text-gray-400">Host:</span>
                         <span className="ml-2 font-mono font-semibold text-gray-200">
-                          {instance.credentials?.host}
+                          {instance.containerIp}
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-400">Port:</span>
                         <span className="ml-2 font-mono font-semibold text-gray-200">
-                          {instance.credentials?.port}
+                          {instance.containerPort}
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-400">Database:</span>
                         <span className="ml-2 font-mono font-semibold text-gray-200">
-                          {instance.credentials?.database}
+                          {instance.databaseName}
                         </span>
                       </div>
                       <div>
                         <span className="text-gray-400">Username:</span>
                         <span className="ml-2 font-mono font-semibold text-gray-200">
-                          {instance.credentials?.username}
+                          {instance.dbUsername}
                         </span>
                       </div>
                     </div>
@@ -307,34 +307,34 @@ const InstancesPage = () => {
                     {instance.status === 'RUNNING' && (
                       <button
                         onClick={() => handleSuspend(instance)}
-                        disabled={actionLoading === instance.id}
+                        disabled={actionLoading === instance.idInstance}
                         className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {actionLoading === instance.id ? 'Suspending...' : 'Suspend'}
+                        {actionLoading === instance.idInstance ? 'Suspending...' : 'Suspend'}
                       </button>
                     )}
                     
                     {instance.status === 'SUSPENDED' && (
                       <button
                         onClick={() => handleResume(instance)}
-                        disabled={actionLoading === instance.id}
+                        disabled={actionLoading === instance.idInstance}
                         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {actionLoading === instance.id ? 'Resuming...' : 'Resume'}
+                        {actionLoading === instance.idInstance ? 'Resuming...' : 'Resume'}
                       </button>
                     )}
                     
                     <button
                       onClick={() => handleRotatePassword(instance)}
-                      disabled={actionLoading === instance.id || instance.status !== 'RUNNING'}
+                      disabled={actionLoading === instance.idInstance || instance.status !== 'RUNNING'}
                       className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {actionLoading === instance.id ? 'Rotating...' : 'Rotate Password'}
+                      {actionLoading === instance.idInstance ? 'Rotating...' : 'Rotate Password'}
                     </button>
                     
                     <button
                       onClick={() => handleDeleteClick(instance)}
-                      disabled={actionLoading === instance.id}
+                      disabled={actionLoading === instance.idInstance}
                       className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Delete
@@ -374,13 +374,13 @@ const InstancesPage = () => {
 
       {showDeleteModal && selectedInstance && (
         <DeleteConfirmModal
-          instanceName={selectedInstance.name}
+          instanceName={selectedInstance.databaseName}
           onConfirm={handleDeleteConfirm}
           onCancel={() => {
             setShowDeleteModal(false);
             setSelectedInstance(null);
           }}
-          loading={actionLoading === selectedInstance.id}
+          loading={actionLoading === selectedInstance.idInstance}
         />
       )}
     </div>
