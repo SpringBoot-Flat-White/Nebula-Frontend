@@ -9,6 +9,9 @@ import DashboardPage from './pages/DashboardPage';
 import InstancesPage from './pages/InstancesPage';
 import EnginesPage from './pages/EnginesPage';
 import PlansPage from './pages/PlansPage';
+import CheckoutPage from './pages/CheckoutPage';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import CompleteProfilePage from './pages/CompleteProfilePage';
 
@@ -36,6 +39,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <PlansPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/checkout" 
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/payment/success" 
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/payment/failure" 
+            element={
+              <ProtectedRoute>
+                <PaymentFailure />
               </ProtectedRoute>
             } 
           />

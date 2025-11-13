@@ -19,7 +19,7 @@ const Pricing = () => {
     {
       id: 'standard',
       name: 'Standard',
-      price: 19,
+      price: 2000,
       instances: 5,
       popular: true,
       features: [
@@ -35,7 +35,7 @@ const Pricing = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 49,
+      price: 3000,
       instances: 10,
       features: [
         'Up to 10 instances',
@@ -90,9 +90,9 @@ const Pricing = () => {
               {/* Price */}
               <div className="mb-6">
                 <span className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  ${plan.price}
+                  ${plan.price.toLocaleString('es-CO')}
                 </span>
-                <span className="text-gray-400 ml-2">/month</span>
+                <span className="text-gray-400 ml-2">COP/month</span>
               </div>
 
               {/* Instances */}

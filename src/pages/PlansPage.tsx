@@ -28,7 +28,7 @@ const PlansPage = () => {
     {
       id: 'standard',
       name: 'Standard',
-      price: 19,
+      price: 2000,
       instances: 5,
       popular: true,
       features: [
@@ -44,7 +44,7 @@ const PlansPage = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 49,
+      price: 3000,
       instances: 10,
       features: [
         'Up to 10 instances',
@@ -66,10 +66,33 @@ const PlansPage = () => {
     return planName.toUpperCase() === currentPlan;
   };
 
-  const handlePlanSelection = (planId: string) => {
-    // TODO: Implementar lógica de cambio de plan cuando el backend esté listo
-    console.log('Selected plan:', planId);
-    alert(`Plan selection for "${planId}" will be implemented with backend integration`);
+  const canSelectPlan = (planName: string): boolean => {
+    const planUpper = planName.toUpperCase();
+    const currentUpper = currentPlan.toUpperCase();
+
+    // If it's the current plan, can't select it
+    if (planUpper === currentUpper) return false;
+
+    // If user has FREE plan, can select any (Standard or Premium)
+    if (currentUpper === 'FREE') return true;
+
+    // If user has STANDARD plan, can only select Premium (upgrade)
+    if (currentUpper === 'STANDARD') return planUpper === 'PREMIUM';
+
+    // If user has PREMIUM plan, can't select any other (already has the best)
+    if (currentUpper === 'PREMIUM') return false;
+
+    return false;
+  };
+
+  const getButtonText = (planName: string): string => {
+    const planUpper = planName.toUpperCase();
+    const currentUpper = currentPlan.toUpperCase();
+
+    if (planUpper === currentUpper) return 'Current Plan';
+    if (!canSelectPlan(planName)) return 'Not Available';
+    if (planUpper === 'FREE') return 'Downgrade';
+    return 'Upgrade';
   };
 
   return (
@@ -213,9 +236,9 @@ const PlansPage = () => {
                     {/* Price */}
                     <div className="mb-6">
                       <span className="text-5xl font-bold gradient-text">
-                        ${plan.price}
+                        ${plan.price.toLocaleString('es-CO')}
                       </span>
-                      <span className="text-gray-400 ml-2">/month</span>
+                      <span className="text-gray-400 ml-2">COP/month</span>
                     </div>
 
                     {/* Instances */}
@@ -249,17 +272,23 @@ const PlansPage = () => {
 
                     {/* CTA Button */}
                     <button
-                      onClick={() => !isCurrent && handlePlanSelection(plan.id)}
-                      disabled={isCurrent}
+                      onClick={() => {
+                        if (canSelectPlan(plan.name)) {
+                          navigate('/dashboard/checkout', { state: { plan } });
+                        }
+                      }}
+                      disabled={!canSelectPlan(plan.name)}
                       className={`block w-full text-center py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
-                        isCurrent
+                        isPlanCurrent(plan.name)
                           ? 'bg-green-900/50 text-green-400 cursor-not-allowed border border-green-700'
+                          : !canSelectPlan(plan.name)
+                          ? 'bg-gray-700/50 text-gray-500 cursor-not-allowed border border-gray-600'
                           : plan.popular
                           ? 'btn-primary hover:shadow-xl hover:shadow-purple-500/50 transform hover:-translate-y-0.5'
                           : 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-700'
                       }`}
                     >
-                      {isCurrent ? 'Current Plan' : plan.price === 0 ? 'Downgrade' : 'Upgrade'}
+                      {getButtonText(plan.name)}
                     </button>
                   </div>
                 );

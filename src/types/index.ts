@@ -75,4 +75,33 @@ export interface AuthContextType {
   logout: () => void;
   handleOAuthCallback: (email: string) => Promise<void>;
   completeProfile: (email: string, fullName: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
+}
+
+// Payment Types
+export type PaymentStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+
+/**
+ * Payment request to create a Mercado Pago preference
+ */
+export interface PaymentRequest {
+  planId: number;
+  payerEmail: string;
+  payerPhone: string;
+}
+
+/**
+ * Payment response from backend with Mercado Pago details
+ */
+export interface PaymentResponse {
+  id?: string;
+  preferenceId?: string;
+  initPoint?: string;
+  status?: PaymentStatus;
+  amount?: number;
+  planName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  mercadoPagoId?: string;
+  userId?: string;
 }

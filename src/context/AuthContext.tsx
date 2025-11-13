@@ -187,6 +187,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  /**
+   * Refresh user data from the backend.
+   * This is useful after payment completion to get the updated plan.
+   */
+  const refreshUser = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+        method: 'GET',
+        credentials: 'include', // Include HttpOnly cookie
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh user data');
+      }
+
+      const userData = await response.json();
+
+      const updatedUser: User = {
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: userData.userType,
+        plan: userData.plan || 'FREE',
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      
+      console.log('User data refreshed successfully:', updatedUser);
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+      // Don't throw error, just log it
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
@@ -196,6 +233,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     logout,
     handleOAuthCallback,
     completeProfile,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
