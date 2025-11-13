@@ -33,8 +33,8 @@ export interface User {
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional for backward compatibility
-  planId: number;
-  userId: number;
+  planId?: number;
+  userId?: number;
 }
 
 /**
@@ -59,14 +59,13 @@ export interface RegisterData {
  * Raw authentication response returned by the backend after a successful login.
  */
 export interface AuthenticationResponse {
-  access_token: string;
+  access_token?: string; // Optional for OAuth responses
   email: string;
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional until backend is updated
-  planId: number;
-  userId: number;
-  
+  planId?: number;
+  userId?: number;
 }
 
 export interface AuthContextType {
@@ -76,6 +75,12 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
-  handleOAuthCallback: (email: string) => Promise<void>;
+  handleOAuthCallback: (userData: {
+    email: string;
+    fullName: string;
+    userType: string;
+    userId?: number;
+    planId?: number;
+  }) => Promise<void>;
   completeProfile: (email: string, fullName: string) => Promise<void>;
 }

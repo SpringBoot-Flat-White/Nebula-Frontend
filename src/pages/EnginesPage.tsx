@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useInstances } from '../hooks/useInstances';
 import type { InstanceDetail, ContainerStatus } from '../types/database';
 import CreateInstanceModal from '../components/instances/CreateInstanceModal';
 import CredentialsModal from '../components/instances/CredentialsModal';
+import { getInstances, getInstancesByEngine } from '../services/instanceService';
 
 interface DatabaseEngine {
   id: string;
+  backendId: number | null; // ID used in backend API
   name: string;
   description: string;
   color: string;
@@ -17,6 +19,7 @@ interface DatabaseEngine {
 const engines: DatabaseEngine[] = [
   {
     id: 'all',
+    backendId: null, // null means get all instances
     name: 'All Engines',
     description: 'View all database instances',
     color: 'from-purple-600 to-blue-600',
@@ -24,27 +27,39 @@ const engines: DatabaseEngine[] = [
   },
   {
     id: 'mysql',
+    backendId: 1,
     name: 'MySQL',
     description: 'Open-source relational database',
     color: 'from-blue-500 to-blue-600',
     icon: ''
   },
   {
-    id: 'sqlserver',
-    name: 'SQL Server',
-    description: 'Microsoft enterprise database',
-    color: 'from-red-500 to-red-600',
-    icon: ''
-  },
-  {
-    id: 'postgresql',
+    id: 'postgres',
+    backendId: 2,
     name: 'PostgreSQL',
     description: 'Advanced open-source database',
     color: 'from-indigo-500 to-blue-500',
     icon: ''
   },
   {
+    id: 'sqlserver',
+    backendId: 3,
+    name: 'SQL Server',
+    description: 'Microsoft enterprise database',
+    color: 'from-red-500 to-red-600',
+    icon: ''
+  },
+  {
+    id: 'mongodb',
+    backendId: 4,
+    name: 'MongoDB',
+    description: 'Document-oriented NoSQL database',
+    color: 'from-green-500 to-green-600',
+    icon: ''
+  },
+  {
     id: 'redis',
+    backendId: 5,
     name: 'Redis',
     description: 'In-memory data structure store',
     color: 'from-red-600 to-orange-500',
@@ -52,16 +67,10 @@ const engines: DatabaseEngine[] = [
   },
   {
     id: 'cassandra',
+    backendId: 6,
     name: 'Cassandra',
     description: 'Distributed NoSQL database',
     color: 'from-purple-500 to-pink-500',
-    icon: ''
-  },
-  {
-    id: 'mongodb',
-    name: 'MongoDB',
-    description: 'Document-oriented NoSQL database',
-    color: 'from-green-500 to-green-600',
     icon: ''
   }
 ];
@@ -70,13 +79,49 @@ const EnginesPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { engineId } = useParams();
-  const { instances, suspendInstance, resumeInstance, deleteInstance } = useInstances();
+  const { suspendInstance, resumeInstance, deleteInstance } = useInstances();
 
+  const [instances, setInstances] = useState<InstanceDetail[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState<InstanceDetail | null>(null);
   const [newPassword, setNewPassword] = useState<string>('');
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+
+  // Load instances when component mounts or engineId changes
+  useEffect(() => {
+    const loadInstances = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Default to 'all' if no engineId is provided
+        const currentEngineId = engineId || 'all';
+        const selectedEngine = engines.find(e => e.id === currentEngineId);
+        
+        if (!selectedEngine) {
+          setError('Invalid engine selected');
+          return;
+        }
+
+        // If 'all' is selected, get all instances, otherwise filter by engine
+        const data = selectedEngine.backendId === null
+          ? await getInstances()
+          : await getInstancesByEngine(selectedEngine.backendId);
+        
+        setInstances(data);
+      } catch (err) {
+        console.error('Error loading instances:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load instances');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInstances();
+  }, [engineId]);
 
   const handleLogout = () => {
     logout();
@@ -100,8 +145,15 @@ const EnginesPage = () => {
 
   const handleSuspend = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.id);
-      await suspendInstance(instance.id);
+      setActionLoading(instance.idInstance);
+      await suspendInstance(instance.idInstance);
+      // Reload instances after action
+      const currentEngineId = engineId || 'all';
+      const selectedEngine = engines.find(e => e.id === currentEngineId);
+      const data = selectedEngine?.backendId === null
+        ? await getInstances()
+        : await getInstancesByEngine(selectedEngine!.backendId);
+      setInstances(data);
     } catch (err) {
       console.error('Error suspending instance:', err);
     } finally {
@@ -111,8 +163,15 @@ const EnginesPage = () => {
 
   const handleResume = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.id);
-      await resumeInstance(instance.id);
+      setActionLoading(instance.idInstance);
+      await resumeInstance(instance.idInstance);
+      // Reload instances after action
+      const currentEngineId = engineId || 'all';
+      const selectedEngine = engines.find(e => e.id === currentEngineId);
+      const data = selectedEngine?.backendId === null
+        ? await getInstances()
+        : await getInstancesByEngine(selectedEngine!.backendId);
+      setInstances(data);
     } catch (err) {
       console.error('Error resuming instance:', err);
     } finally {
@@ -121,11 +180,18 @@ const EnginesPage = () => {
   };
 
   const handleDelete = async (instance: InstanceDetail) => {
-    if (!confirm(`Are you sure you want to delete "${instance.name}"?`)) return;
+    if (!confirm(`Are you sure you want to delete "${instance.databaseName}"?`)) return;
     
     try {
-      setActionLoading(instance.id);
-      await deleteInstance(instance.id);
+      setActionLoading(instance.idInstance);
+      await deleteInstance(instance.idInstance);
+      // Reload instances after action
+      const currentEngineId = engineId || 'all';
+      const selectedEngine = engines.find(e => e.id === currentEngineId);
+      const data = selectedEngine?.backendId === null
+        ? await getInstances()
+        : await getInstancesByEngine(selectedEngine!.backendId);
+      setInstances(data);
     } catch (err) {
       console.error('Error deleting instance:', err);
     } finally {
@@ -136,11 +202,6 @@ const EnginesPage = () => {
   // Default to 'all' if no engineId is provided
   const currentEngineId = engineId || 'all';
   const selectedEngine = engines.find(e => e.id === currentEngineId);
-
-  // Filter instances by selected engine
-  const filteredInstances = currentEngineId === 'all'
-    ? instances
-    : instances.filter(inst => inst.engine.name.toLowerCase() === currentEngineId.toLowerCase());
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
@@ -235,7 +296,18 @@ const EnginesPage = () => {
                   </button>
                 </div>
 
-                {filteredInstances.length === 0 ? (
+                {loading ? (
+                  /* Loading State */
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                    <p className="text-gray-300">Loading instances...</p>
+                  </div>
+                ) : error ? (
+                  /* Error State */
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    {error}
+                  </div>
+                ) : instances.length === 0 ? (
                   /* Empty State */
                   <div className="text-center py-12">
                     <div className="w-20 h-20 bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-700">
@@ -245,9 +317,9 @@ const EnginesPage = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">No instances yet</h3>
                     <p className="text-gray-300 mb-6">
-                      {selectedEngine.id === 'all' 
+                      {selectedEngine && selectedEngine.id === 'all' 
                         ? 'Create your first database instance to get started'
-                        : `Create your first ${selectedEngine.name} instance to get started`
+                        : `Create your first ${selectedEngine?.name} instance to get started`
                       }
                     </p>
                     <button
@@ -260,61 +332,61 @@ const EnginesPage = () => {
                 ) : (
                   /* Instance List */
                   <div className="space-y-4">
-                    {filteredInstances.map((instance) => (
+                    {instances.map((instance) => (
                       <div
-                        key={instance.id}
+                        key={instance.idInstance}
                         className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
-                              <h3 className="text-xl font-bold text-white">{instance.name}</h3>
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(instance.container.status)}`}>
-                                {instance.container.status}
+                              <h3 className="text-xl font-bold text-white">{instance.databaseName}</h3>
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${instance.status ? getStatusColor(instance.status as ContainerStatus) : 'bg-gray-800 text-gray-400 border-gray-700'}`}>
+                                {instance.status || 'UNKNOWN'}
                               </span>
                             </div>
                             <div className="grid grid-cols-2 gap-4 text-sm text-gray-400">
                               <div>
-                                <span className="font-semibold text-gray-300">Engine:</span> {instance.engine.name}
+                                <span className="font-semibold text-gray-300">Engine:</span> {instance.engineName}
                               </div>
                               <div>
-                                <span className="font-semibold">Port:</span> {instance.container.port}
+                                <span className="font-semibold">Port:</span> {instance.containerPort}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Host:</span> {instance.containerIp}
                               </div>
                               <div>
                                 <span className="font-semibold">Created:</span> {new Date(instance.createdAt).toLocaleDateString()}
-                              </div>
-                              <div>
-                                <span className="font-semibold">Last Updated:</span> {new Date(instance.updatedAt).toLocaleDateString()}
                               </div>
                             </div>
                           </div>
                           
                           {/* Action Buttons */}
                           <div className="flex space-x-2 ml-4">
-                            {instance.container.status === 'RUNNING' ? (
+                            {instance.status === 'RUNNING' ? (
                               <button
                                 onClick={() => handleSuspend(instance)}
-                                disabled={actionLoading === instance.id}
+                                disabled={actionLoading === instance.idInstance}
                                 className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                               >
-                                {actionLoading === instance.id ? 'Suspending...' : 'Suspend'}
+                                {actionLoading === instance.idInstance ? 'Suspending...' : 'Suspend'}
                               </button>
-                            ) : instance.container.status === 'SUSPENDED' ? (
+                            ) : instance.status === 'SUSPENDED' ? (
                               <button
                                 onClick={() => handleResume(instance)}
-                                disabled={actionLoading === instance.id}
+                                disabled={actionLoading === instance.idInstance}
                                 className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                               >
-                                {actionLoading === instance.id ? 'Resuming...' : 'Resume'}
+                                {actionLoading === instance.idInstance ? 'Resuming...' : 'Resume'}
                               </button>
                             ) : null}
                             
                             <button
                               onClick={() => handleDelete(instance)}
-                              disabled={actionLoading === instance.id || instance.container.status === 'DELETED'}
+                              disabled={actionLoading === instance.idInstance || instance.status === 'DELETED'}
                               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                             >
-                              {actionLoading === instance.id ? 'Deleting...' : 'Delete'}
+                              {actionLoading === instance.idInstance ? 'Deleting...' : 'Delete'}
                             </button>
                           </div>
                         </div>
@@ -378,11 +450,22 @@ const EnginesPage = () => {
       {showCreateModal && (
         <CreateInstanceModal
           onClose={() => setShowCreateModal(false)}
-          onSuccess={(instance, password) => {
+          onSuccess={async (instance, password) => {
             setSelectedInstance(instance);
             setNewPassword(password);
             setShowCreateModal(false);
             setShowCredentialsModal(true);
+            // Reload instances after creating a new one
+            try {
+              const currentEngineId = engineId || 'all';
+              const selectedEngine = engines.find(e => e.id === currentEngineId);
+              const data = selectedEngine?.backendId === null
+                ? await getInstances()
+                : await getInstancesByEngine(selectedEngine!.backendId);
+              setInstances(data);
+            } catch (err) {
+              console.error('Error reloading instances:', err);
+            }
           }}
         />
       )}

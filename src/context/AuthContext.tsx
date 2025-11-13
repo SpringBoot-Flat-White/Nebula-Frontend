@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { User, LoginCredentials, RegisterData, AuthContextType } from '../types';
+import type { User, LoginCredentials, RegisterData, AuthContextType, AccountType } from '../types';
 import { loginRequest, registerRequest } from '../hooks/Auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
@@ -118,18 +118,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   /**
    * Handle OAuth callback. This is called when the user is redirected back
    * from the OAuth provider. The JWT is already set as an HttpOnly cookie.
-   * We create a basic user profile that will be completed later if needed.
+   * User data is passed from the backend via query parameters.
    */
-  const handleOAuthCallback = async (email: string) => {
+  const handleOAuthCallback = async (userData: {
+    email: string;
+    fullName: string;
+    userType: string;
+    userId?: number;
+    planId?: number;
+  }) => {
     setIsLoading(true);
     try {
-      // Create a basic user profile with the email from the callback
-      // The JWT is already stored as an HttpOnly cookie by the backend
+      // Create user profile from data sent by backend in query parameters
       const newUser: User = {
-        email: email,
-        fullName: '', // Will be filled when completing profile or from backend
-        userType: 'INDIVIDUAL',
-        plan: 'FREE',
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: userData.userType as AccountType,
+        plan: 'FREE', // Default, can be updated based on planId if needed
+        userId: userData.userId,
+        planId: userData.planId,
       };
 
       localStorage.setItem('user', JSON.stringify(newUser));

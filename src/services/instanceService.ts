@@ -10,10 +10,10 @@ import type {
 const MOCK_ENGINES: Engine[] = [
   { id: 1, name: 'MySQL' },
   { id: 2, name: 'PostgreSQL' },
-  { id: 3, name: 'MongoDB' },
-  { id: 4, name: 'Redis' },
-  { id: 5, name: 'Cassandra' },
-  { id: 6, name: 'SQL Server' },
+  { id: 3, name: 'SQL Server' },
+  { id: 4, name: 'MongoDB' },
+  { id: 5, name: 'Redis' },
+  { id: 6, name: 'Cassandra' },
 ];
 
 const MOCK_INSTANCES: InstanceDetail[] = [
@@ -85,11 +85,11 @@ const generateDbName = (engineName: string): string => {
 const generatePort = (engineId: number): number => {
   const basePorts: { [key: number]: number } = {
     1: 3306, // MySQL
-    2: 5432, // PostgreSQL
-    3: 27017, // MongoDB
-    4: 6379, // Redis
-    5: 9042, // Cassandra
-    6: 1433, // SQL Server
+    2: 5432, // PostgreSQL (POSTGRES)
+    3: 1433, // SQL Server (SQLSERVER)
+    4: 27017, // MongoDB
+    5: 6379, // Redis
+    6: 9042, // Cassandra
   };
   return basePorts[engineId] || 8000 + Math.floor(Math.random() * 1000);
 };
@@ -122,6 +122,39 @@ export const getInstances = async (): Promise<InstanceDetail[]> => {
 
   if (!response.ok) {
     throw new Error('Failed to fetch instances');
+  }
+
+  return await response.json();
+};
+
+/**
+ * Get instances filtered by engine
+ * GET /api/instances/{userId}/{engineId}
+ */
+export const getInstancesByEngine = async (engineId: number): Promise<InstanceDetail[]> => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+  
+  // Get userId from localStorage
+  const userData = localStorage.getItem('user');
+  if (!userData) {
+    throw new Error('User not authenticated');
+  }
+  
+  const user = JSON.parse(userData);
+  if (!user.userId) {
+    throw new Error('User ID not found');
+  }
+  
+  const response = await fetch(`${API_BASE_URL}/api/instances/${user.userId}/${engineId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch instances by engine');
   }
 
   return await response.json();

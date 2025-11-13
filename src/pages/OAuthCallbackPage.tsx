@@ -28,6 +28,10 @@ const OAuthCallbackPage = () => {
       try {
         const profileCompleted = searchParams.get('profileCompleted') === 'true';
         const email = searchParams.get('email');
+        const fullName = searchParams.get('fullName');
+        const userType = searchParams.get('userType');
+        const userId = searchParams.get('userId');
+        const planId = searchParams.get('planId');
 
         if (!email) {
           setError('Invalid authentication response. Please try again.');
@@ -35,8 +39,17 @@ const OAuthCallbackPage = () => {
           return;
         }
 
-        // Process the OAuth callback in the auth context
-        await handleOAuthCallback(email);
+        // Parse user data from query parameters sent by backend
+        const userData = {
+          email,
+          fullName: fullName || '',
+          userType: userType || 'INDIVIDUAL',
+          userId: userId ? parseInt(userId) : undefined,
+          planId: planId ? parseInt(planId) : undefined,
+        };
+
+        // Process the OAuth callback in the auth context with complete user data
+        await handleOAuthCallback(userData);
 
         // Redirect based on profile completion status
         if (profileCompleted) {
