@@ -1,5 +1,6 @@
 import type {
   InstanceDetail,
+  Engine,
 } from '../types/database';
 
 /**
@@ -66,4 +67,21 @@ export const getInstancesByEngine = async (engineId: number): Promise<InstanceDe
   }
 
   return await response.json();
+};
+
+/**
+ * Get available database engines
+ */
+export const getEngines = async (): Promise<Engine[]> => {
+  // Hardcoded engines list matching backend IDs
+  const engines: Engine[] = [
+    { id: 1, name: 'MySQL' },
+    { id: 2, name: 'PostgreSQL' },
+    { id: 3, name: 'SQL Server' },
+    { id: 4, name: 'MongoDB' },
+    { id: 5, name: 'Redis' },
+    { id: 6, name: 'Cassandra' },
+  ];
+  
+  return engines;
 };
