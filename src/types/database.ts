@@ -56,17 +56,18 @@ export interface Instance {
   credentials?: InstanceCredentials;
 }
 
-// Instance with full details (from backend response)
-export interface InstanceDetail {
+// Instance with full details (populated from joins)
+export interface InstanceDetail extends Instance {
   idInstance: number;
-  status: string | null;
   databaseName: string;
-  createdAt: string;
-  containerId: number;
-  containerIp: string;
-  containerPort: number;
-  engineName: string;
-  dbUsername: string;
+  engineName: EngineName;
+  container: Container;
+  engine: Engine;
+  credentials: InstanceCredentials;
+  status: ContainerStatus;
+  containerIp?: string;
+  containerPort?: number;
+  dbUsername?: string;
 }
 
 // Credentials shown only once
