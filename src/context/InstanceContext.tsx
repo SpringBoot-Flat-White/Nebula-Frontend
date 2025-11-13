@@ -64,7 +64,7 @@ export const InstanceProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createInstance = async (request: CreateInstanceRequest) => {
+  const createInstance = async (request: CreateInstanceRequest): Promise<{ instance: InstanceDetail; password: string }> => {
     try {
       setLoading(true);
       setError(null);
@@ -77,10 +77,10 @@ export const InstanceProvider = ({ children }: { children: ReactNode }) => {
       const response = await instanceService.createInstance(request);
 
       // Add new instance to list
-      setInstances((prev) => [...prev, response.instance]);
+      setInstances((prev: InstanceDetail[]) => [...prev, response.instance as InstanceDetail]);
 
       return {
-        instance: response.instance,
+        instance: response.instance as InstanceDetail,
         password: response.credentials.password || '',
       };
     } catch (err) {
