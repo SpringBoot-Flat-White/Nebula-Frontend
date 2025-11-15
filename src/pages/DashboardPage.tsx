@@ -56,6 +56,14 @@ const DashboardPage = () => {
       icon: '',
       route: '/dashboard/plans',
       color: 'from-pink-500 to-purple-500'
+    },
+    {
+      id: 'transactions',
+      name: 'Transactions',
+      description: 'View your payment history',
+      icon: '',
+      route: '/dashboard/transactions',
+      color: 'from-green-500 to-teal-500'
     }
   ] : [];
 

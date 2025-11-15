@@ -113,3 +113,16 @@ export interface PaymentResponse {
   mercadoPagoId?: string;
   userId?: string;
 }
+
+/**
+ * Transaction/Payment history item
+ */
+export interface Transaction {
+  id: number;
+  planName: string;
+  amount: number;
+  status: 'APPROVED' | 'PENDING' | 'FAILED' | 'PAUSED';
+  transactionId: string;
+  mercadoPagoPaymentId: string;
+  createdAt: string;
+}

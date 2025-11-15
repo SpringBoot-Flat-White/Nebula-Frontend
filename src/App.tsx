@@ -12,6 +12,7 @@ import PlansPage from './pages/PlansPage';
 import CheckoutPage from './pages/CheckoutPage';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailure from './pages/PaymentFailure';
+import TransactionsPage from './pages/TransactionsPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import CompleteProfilePage from './pages/CompleteProfilePage';
 
@@ -39,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PlansPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/transactions" 
+            element={
+              <ProtectedRoute>
+                <TransactionsPage />
               </ProtectedRoute>
             } 
           />
