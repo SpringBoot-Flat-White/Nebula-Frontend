@@ -28,7 +28,7 @@ const PlansPage = () => {
     {
       id: 'standard',
       name: 'Standard',
-      price: 19,
+      price: 2000,
       instances: 5,
       popular: true,
       features: [
@@ -44,7 +44,7 @@ const PlansPage = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 49,
+      price: 3000,
       instances: 10,
       features: [
         'Up to 10 instances',
@@ -66,29 +66,52 @@ const PlansPage = () => {
     return planName.toUpperCase() === currentPlan;
   };
 
-  const handlePlanSelection = (planId: string) => {
-    // TODO: Implementar lógica de cambio de plan cuando el backend esté listo
-    console.log('Selected plan:', planId);
-    alert(`Plan selection for "${planId}" will be implemented with backend integration`);
+  const canSelectPlan = (planName: string): boolean => {
+    const planUpper = planName.toUpperCase();
+    const currentUpper = currentPlan.toUpperCase();
+
+    // If it's the current plan, can't select it
+    if (planUpper === currentUpper) return false;
+
+    // If user has FREE plan, can select any (Standard or Premium)
+    if (currentUpper === 'FREE') return true;
+
+    // If user has STANDARD plan, can only select Premium (upgrade)
+    if (currentUpper === 'STANDARD') return planUpper === 'PREMIUM';
+
+    // If user has PREMIUM plan, can't select any other (already has the best)
+    if (currentUpper === 'PREMIUM') return false;
+
+    return false;
+  };
+
+  const getButtonText = (planName: string): string => {
+    const planUpper = planName.toUpperCase();
+    const currentUpper = currentPlan.toUpperCase();
+
+    if (planUpper === currentUpper) return 'Current Plan';
+    if (!canSelectPlan(planName)) return 'Not Available';
+    if (planUpper === 'FREE') return 'Downgrade';
+    return 'Upgrade';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b border-purple-100">
+      <header className="bg-gray-900/95 backdrop-blur-sm shadow-2xl sticky top-0 z-50 border-b border-gray-800">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/50">
                 <span className="text-white font-bold text-xl">N</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Nebula
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="text-gray-700 hover:text-purple-600 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-purple-50"
+              className="text-gray-300 hover:text-purple-400 font-semibold transition-colors px-4 py-2 rounded-lg hover:bg-gray-800"
             >
               Logout
             </button>
@@ -98,11 +121,11 @@ const PlansPage = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white/80 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-lg border-r border-purple-100">
+        <aside className="w-64 bg-gray-900/95 backdrop-blur-sm min-h-[calc(100vh-73px)] shadow-2xl border-r border-gray-800">
           <div className="p-6">
             <button
               onClick={() => navigate('/dashboard')}
-              className="flex items-center text-gray-600 hover:text-purple-600 transition-colors mb-6"
+              className="flex items-center text-gray-400 hover:text-purple-400 transition-colors mb-6"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -110,27 +133,27 @@ const PlansPage = () => {
               Back to Dashboard
             </button>
             
-            <h2 className="text-lg font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h2 className="text-lg font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               Quick Access
             </h2>
             
             <nav className="space-y-3">
               <button
                 onClick={() => navigate('/dashboard/engines')}
-                className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-white shadow-md hover:shadow-xl border border-purple-100"
+                className="w-full text-left px-4 py-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 hover:text-white transition-all duration-200 group bg-gray-800/50 shadow-lg hover:shadow-purple-500/50 border border-gray-700 hover:border-purple-500"
               >
                 <div>
-                  <div className="font-semibold text-gray-900 group-hover:text-white">
+                  <div className="font-semibold text-gray-100 group-hover:text-white">
                     Database Engines
                   </div>
-                  <div className="text-xs text-gray-600 group-hover:text-purple-100">
+                  <div className="text-xs text-gray-400 group-hover:text-purple-100">
                     Manage instances
                   </div>
                 </div>
               </button>
 
               <button
-                className="w-full text-left px-4 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white transition-all duration-200 shadow-xl border border-purple-100"
+                className="w-full text-left px-4 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white transition-all duration-200 shadow-lg shadow-purple-500/50 border border-purple-500"
               >
                 <div>
                   <div className="font-semibold">
@@ -148,17 +171,17 @@ const PlansPage = () => {
         {/* Main Content */}
         <main className="flex-1 p-8">
           {/* Page Header */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-8 border border-purple-100">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+          <div className="bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-purple-500/10 p-8 mb-8 border border-gray-800">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2">
               Subscription Plans
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-300">
               Choose the perfect plan for your needs
             </p>
           </div>
 
           {/* Current Plan Info */}
-          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-2xl p-8 mb-8 text-white">
+          <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl shadow-2xl shadow-purple-500/50 p-8 mb-8 text-white">
             <div>
               <p className="text-purple-100 mb-1">Your Current Plan</p>
               <h2 className="text-4xl font-bold mb-2">{currentPlan}</h2>
@@ -170,7 +193,7 @@ const PlansPage = () => {
 
           {/* Plans Grid */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Plans</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Available Plans</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {plans.map((plan) => {
                 const isCurrent = isPlanCurrent(plan.name);
@@ -180,10 +203,10 @@ const PlansPage = () => {
                     key={plan.id}
                     className={`relative rounded-2xl border-2 p-8 transition-all duration-300 ${
                       isCurrent
-                        ? 'border-green-500 shadow-2xl bg-gradient-to-br from-green-50 to-emerald-50'
+                        ? 'border-green-500 shadow-2xl shadow-green-500/50 bg-gradient-to-br from-green-950/50 to-emerald-950/50'
                         : plan.popular
-                        ? 'border-primary-500 shadow-xl scale-105 bg-gradient-to-br from-primary-50 to-secondary-50'
-                        : 'border-gray-200 hover:border-primary-300 hover:shadow-xl bg-white'
+                        ? 'border-primary-500 shadow-xl shadow-purple-500/50 scale-105 bg-gradient-to-br from-gray-900 to-gray-800'
+                        : 'border-gray-700 hover:border-primary-500 hover:shadow-xl hover:shadow-purple-500/30 bg-gray-900'
                     }`}
                   >
                     {/* Current Plan Badge */}
@@ -201,26 +224,26 @@ const PlansPage = () => {
                     {/* Popular Badge */}
                     {!isCurrent && plan.popular && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                        <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg shadow-purple-500/50">
                           Most Popular
                         </span>
                       </div>
                     )}
 
                     {/* Plan Name */}
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
 
                     {/* Price */}
                     <div className="mb-6">
                       <span className="text-5xl font-bold gradient-text">
-                        ${plan.price}
+                        ${plan.price.toLocaleString('es-CO')}
                       </span>
-                      <span className="text-gray-600 ml-2">/month</span>
+                      <span className="text-gray-400 ml-2">COP/month</span>
                     </div>
 
                     {/* Instances */}
-                    <div className="mb-6 pb-6 border-b border-gray-200">
-                      <p className="text-gray-700 font-semibold">
+                    <div className="mb-6 pb-6 border-b border-gray-700">
+                      <p className="text-gray-300 font-semibold">
                         <span className="text-2xl gradient-text">{plan.instances}</span> instances
                       </p>
                     </div>
@@ -231,7 +254,7 @@ const PlansPage = () => {
                         <li key={index} className="flex items-start">
                           <svg
                             className={`w-5 h-5 mr-3 mt-0.5 flex-shrink-0 ${
-                              isCurrent ? 'text-green-600' : 'text-primary-600'
+                              isCurrent ? 'text-green-400' : 'text-primary-400'
                             }`}
                             fill="none"
                             strokeLinecap="round"
@@ -242,24 +265,30 @@ const PlansPage = () => {
                           >
                             <path d="M5 13l4 4L19 7"></path>
                           </svg>
-                          <span className="text-gray-700">{feature}</span>
+                          <span className="text-gray-300">{feature}</span>
                         </li>
                       ))}
                     </ul>
 
                     {/* CTA Button */}
                     <button
-                      onClick={() => !isCurrent && handlePlanSelection(plan.id)}
-                      disabled={isCurrent}
+                      onClick={() => {
+                        if (canSelectPlan(plan.name)) {
+                          navigate('/dashboard/checkout', { state: { plan } });
+                        }
+                      }}
+                      disabled={!canSelectPlan(plan.name)}
                       className={`block w-full text-center py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
-                        isCurrent
-                          ? 'bg-green-100 text-green-700 cursor-not-allowed'
+                        isPlanCurrent(plan.name)
+                          ? 'bg-green-900/50 text-green-400 cursor-not-allowed border border-green-700'
+                          : !canSelectPlan(plan.name)
+                          ? 'bg-gray-700/50 text-gray-500 cursor-not-allowed border border-gray-600'
                           : plan.popular
-                          ? 'btn-primary hover:shadow-xl transform hover:-translate-y-0.5'
-                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                          ? 'btn-primary hover:shadow-xl hover:shadow-purple-500/50 transform hover:-translate-y-0.5'
+                          : 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-700'
                       }`}
                     >
-                      {isCurrent ? 'Current Plan' : plan.price === 0 ? 'Downgrade' : 'Upgrade'}
+                      {getButtonText(plan.name)}
                     </button>
                   </div>
                 );

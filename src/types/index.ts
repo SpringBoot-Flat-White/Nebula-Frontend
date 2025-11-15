@@ -33,8 +33,8 @@ export interface User {
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional for backward compatibility
-  id?: string;
-  createdAt?: string;
+  planId?: number;
+  userId?: number;
 }
 
 /**
@@ -59,11 +59,13 @@ export interface RegisterData {
  * Raw authentication response returned by the backend after a successful login.
  */
 export interface AuthenticationResponse {
-  access_token: string;
+  access_token?: string; // Optional for OAuth responses
   email: string;
   fullName: string;
   userType: AccountType;
   plan?: PlanType; // Optional until backend is updated
+  planId?: number;
+  userId?: number;
 }
 
 export interface AuthContextType {
@@ -73,4 +75,54 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  handleOAuthCallback: (userData: {
+    email: string;
+    fullName: string;
+    userType: string;
+    userId?: number;
+    planId?: number;
+  }) => Promise<void>;
+  completeProfile: (email: string, fullName: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
+}
+
+// Payment Types
+export type PaymentStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+
+/**
+ * Payment request to create a Mercado Pago preference
+ */
+export interface PaymentRequest {
+  planId: number;
+  payerEmail: string;
+  payerPhone: string;
+}
+
+/**
+ * Payment response from backend with Mercado Pago details
+ */
+export interface PaymentResponse {
+  id?: string;
+  preferenceId?: string;
+  initPoint?: string;
+  status?: PaymentStatus;
+  amount?: number;
+  planName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  mercadoPagoId?: string;
+  userId?: string;
+}
+
+/**
+ * Transaction/Payment history item
+ */
+export interface Transaction {
+  id: number;
+  planName: string;
+  amount: number;
+  status: 'APPROVED' | 'PENDING' | 'FAILED' | 'PAUSED';
+  transactionId: string;
+  mercadoPagoPaymentId: string;
+  createdAt: string;
 }

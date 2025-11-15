@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const CTA = () => {
   return (
-    <section className="py-20 bg-gradient-to-r from-primary-600 via-secondary-600 to-pink-600 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-r from-purple-900 via-blue-900 to-pink-900 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -23,7 +23,7 @@ const CTA = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/register"
-              className="bg-white text-primary-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+              className="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl shadow-purple-500/50 transform hover:-translate-y-1"
             >
               Create Free Account
             </Link>

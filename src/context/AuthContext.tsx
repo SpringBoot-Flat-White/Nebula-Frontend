@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { User, LoginCredentials, RegisterData, AuthContextType } from '../types';
+import type { User, LoginCredentials, RegisterData, AuthContextType, AccountType } from '../types';
 import { loginRequest, registerRequest } from '../hooks/Auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
@@ -53,6 +53,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         fullName: resp.fullName,
         userType: resp.userType,
         plan: resp.plan || 'FREE', // Default to FREE if not provided by backend
+        userId: resp.userId,
+        planId: resp.planId
       };
 
       // Persist user profile locally; token is stored in cookie by the server.
@@ -113,6 +115,126 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  /**
+   * Handle OAuth callback. This is called when the user is redirected back
+   * from the OAuth provider. The JWT is already set as an HttpOnly cookie.
+   * User data is passed from the backend via query parameters.
+   */
+  const handleOAuthCallback = async (userData: {
+    email: string;
+    fullName: string;
+    userType: string;
+    userId?: number;
+    planId?: number;
+  }) => {
+    setIsLoading(true);
+    try {
+      // Create user profile from data sent by backend in query parameters
+      const newUser: User = {
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: userData.userType as AccountType,
+        plan: 'FREE', // Default, can be updated based on planId if needed
+        userId: userData.userId,
+        planId: userData.planId,
+      };
+
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setUser(newUser);
+    } catch (error) {
+      console.error('OAuth callback error:', error);
+      throw error instanceof Error ? error : new Error('OAuth authentication failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Complete the user profile after OAuth registration.
+   * This is called when a new OAuth user needs to provide their full name.
+   */
+  const completeProfile = async (email: string, fullName: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/complete-profile?email=${encodeURIComponent(email)}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ fullName }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || 
+          errorData.error || 
+          'Failed to complete profile'
+        );
+      }
+
+      const userData = await response.json();
+
+      const updatedUser: User = {
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: userData.userType || user?.userType || 'INDIVIDUAL',
+        plan: userData.plan || user?.plan || 'FREE',
+        userId: userData.userId,
+        planId: userData.planId,
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Complete profile error:', error);
+      throw error instanceof Error ? error : new Error('Failed to complete profile.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Refresh user data from the backend.
+   * This is useful after payment completion to get the updated plan.
+   */
+  const refreshUser = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+        method: 'GET',
+        credentials: 'include', // Include HttpOnly cookie
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh user data');
+      }
+
+      const userData = await response.json();
+
+      const updatedUser: User = {
+        email: userData.email,
+        fullName: userData.fullName,
+        userType: userData.userType,
+        plan: userData.plan || 'FREE',
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      
+      console.log('User data refreshed successfully:', updatedUser);
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+      // Don't throw error, just log it
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
@@ -120,6 +242,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     register,
     logout,
+    handleOAuthCallback,
+    completeProfile,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
