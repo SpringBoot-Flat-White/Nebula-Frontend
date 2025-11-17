@@ -12,6 +12,7 @@ import PlansPage from './pages/PlansPage';
 import CheckoutPage from './pages/CheckoutPage';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailure from './pages/PaymentFailure';
+import PaymentPending from './pages/PaymentPending';
 import TransactionsPage from './pages/TransactionsPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import CompleteProfilePage from './pages/CompleteProfilePage';
@@ -72,6 +73,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PaymentFailure />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/payment/pending" 
+            element={
+              <ProtectedRoute>
+                <PaymentPending />
               </ProtectedRoute>
             } 
           />

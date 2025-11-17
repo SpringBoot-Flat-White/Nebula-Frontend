@@ -223,6 +223,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         fullName: userData.fullName,
         userType: userData.userType,
         plan: userData.plan || 'FREE',
+        userId: userData.userId,
+        planId: userData.planId,
       };
 
       localStorage.setItem('user', JSON.stringify(updatedUser));
