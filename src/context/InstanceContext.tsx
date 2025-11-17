@@ -77,11 +77,11 @@ export const InstanceProvider = ({ children }: { children: ReactNode }) => {
       const response = await instanceService.createInstance(request);
 
       // Add new instance to list
-      setInstances((prev: InstanceDetail[]) => [...prev, response.instance as InstanceDetail]);
+      setInstances((prev: InstanceDetail[]) => [...prev, response as any]);
 
       return {
-        instance: response.instance as InstanceDetail,
-        password: response.credentials.password || '',
+        instance: response as any,
+        password: response.password || '',
       };
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create instance');

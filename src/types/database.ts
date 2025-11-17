@@ -115,13 +115,25 @@ export interface OrganizationMember {
 
 // API Response types
 export interface CreateInstanceRequest {
-  engineId: number;
-  name?: string; // Optional for Free plan
+  user: number; // User ID who owns the instance
+  engineId: number; // Database engine type ID
+  databaseName?: string; // Name of the database to create (required for Premium/Standard)
+  dbUser?: string; // Database username (required for Premium/Standard, max 100 chars)
+  dbPasswordEnc?: string; // Database password (required for Premium/Standard, max 255 chars)
 }
 
 export interface CreateInstanceResponse {
-  instance: Instance;
-  credentials: InstanceCredentials;
+  id: number;
+  databaseName: string;
+  engineName: EngineName;
+  dbUsername: string;
+  containerIp: string;
+  status: string;
+  containerPort: number;
+  password: string;
+  userId: number;
+  containerId: number;
+  createdAt: string;
 }
 
 export interface RotatePasswordResponse {
