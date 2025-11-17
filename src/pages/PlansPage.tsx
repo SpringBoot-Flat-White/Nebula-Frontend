@@ -297,25 +297,25 @@ const PlansPage = () => {
           </div>
 
           {/* Additional Info */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-purple-100">
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-purple-500/30">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Need Help Choosing?</h3>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-gray-100 mb-2">Need Help Choosing?</h3>
+              <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
                 All plans include access to all database engines, secure credentials, and our standard features. 
                 Upgrade anytime to get more instances and premium features.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div className="p-4 bg-purple-50 rounded-xl">
-                  <h4 className="font-bold text-gray-900 mb-1">Instant Activation</h4>
-                  <p className="text-sm text-gray-600">Upgrades are applied immediately</p>
+                <div className="p-4 bg-purple-900/30 rounded-xl border border-purple-500/20">
+                  <h4 className="font-bold text-gray-100 mb-1">Instant Activation</h4>
+                  <p className="text-sm text-gray-300">Upgrades are applied immediately</p>
                 </div>
-                <div className="p-4 bg-purple-50 rounded-xl">
-                  <h4 className="font-bold text-gray-900 mb-1">Secure Payments</h4>
-                  <p className="text-sm text-gray-600">Your data is always protected</p>
+                <div className="p-4 bg-purple-900/30 rounded-xl border border-purple-500/20">
+                  <h4 className="font-bold text-gray-100 mb-1">Secure Payments</h4>
+                  <p className="text-sm text-gray-300">Your data is always protected</p>
                 </div>
-                <div className="p-4 bg-purple-50 rounded-xl">
-                  <h4 className="font-bold text-gray-900 mb-1">Flexible Changes</h4>
-                  <p className="text-sm text-gray-600">Change plans anytime you need</p>
+                <div className="p-4 bg-purple-900/30 rounded-xl border border-purple-500/20">
+                  <h4 className="font-bold text-gray-100 mb-1">Flexible Changes</h4>
+                  <p className="text-sm text-gray-300">Change plans anytime you need</p>
                 </div>
               </div>
             </div>

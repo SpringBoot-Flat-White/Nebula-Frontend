@@ -399,46 +399,46 @@ const EnginesPage = () => {
               {/* Coming Soon Features or All Engines Overview */}
               {selectedEngine.id === 'all' ? (
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <h3 className="col-span-full text-2xl font-bold text-gray-900 mb-2">Available Database Engines</h3>
+                  <h3 className="col-span-full text-2xl font-bold text-gray-100 mb-2">Available Database Engines</h3>
                   {engines.slice(1).map((engine) => (
                     <button
                       key={engine.id}
                       onClick={() => navigate(`/dashboard/engines/${engine.id}`)}
-                      className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-all hover:scale-105 text-left group"
+                      className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-500/30 hover:shadow-xl hover:border-purple-500/50 transition-all hover:scale-105 text-left group"
                     >
                       <div className="flex items-center space-x-4 mb-3">
                         <div className={`w-12 h-12 bg-gradient-to-br ${engine.color} rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                           <span className="text-white font-bold text-xl">{engine.name.charAt(0)}</span>
                         </div>
                         <div>
-                          <h4 className="font-bold text-gray-900 text-lg">{engine.name}</h4>
+                          <h4 className="font-bold text-gray-100 text-lg">{engine.name}</h4>
                         </div>
                       </div>
-                      <p className="text-gray-600 text-sm">{engine.description}</p>
+                      <p className="text-gray-300 text-sm">{engine.description}</p>
                     </button>
                   ))}
                 </div>
               ) : (
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <h3 className="font-bold text-gray-900 mb-2">Instance Management</h3>
-                    <p className="text-gray-600 text-sm">Start, stop, and configure your database instances</p>
+                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-500/30 hover:shadow-xl hover:border-purple-500/50 transition-shadow">
+                    <h3 className="font-bold text-gray-100 mb-2">Instance Management</h3>
+                    <p className="text-gray-300 text-sm">Start, stop, and configure your database instances</p>
                   </div>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <h3 className="font-bold text-gray-900 mb-2">Credentials</h3>
-                    <p className="text-gray-600 text-sm">View and manage connection credentials securely</p>
+                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-500/30 hover:shadow-xl hover:border-purple-500/50 transition-shadow">
+                    <h3 className="font-bold text-gray-100 mb-2">Credentials</h3>
+                    <p className="text-gray-300 text-sm">View and manage connection credentials securely</p>
                   </div>
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-shadow">
-                    <h3 className="font-bold text-gray-900 mb-2">Monitoring</h3>
-                    <p className="text-gray-600 text-sm">Track performance and usage metrics</p>
+                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-purple-500/30 hover:shadow-xl hover:border-purple-500/50 transition-shadow">
+                    <h3 className="font-bold text-gray-100 mb-2">Monitoring</h3>
+                    <p className="text-gray-300 text-sm">Track performance and usage metrics</p>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-purple-100">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">Select a Database Engine</h2>
-              <p className="text-gray-600 text-lg">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-purple-500/30">
+              <h2 className="text-3xl font-bold text-gray-100 mb-3">Select a Database Engine</h2>
+              <p className="text-gray-300 text-lg">
                 Choose a database engine from the sidebar to manage your instances
               </p>
             </div>
