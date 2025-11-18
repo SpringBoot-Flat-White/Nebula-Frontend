@@ -145,8 +145,8 @@ const EnginesPage = () => {
 
   const handleSuspend = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.idInstance);
-      await suspendInstance(instance.idInstance);
+      setActionLoading(instance.id);
+      await suspendInstance(instance.id);
       // Reload instances after action
       const currentEngineId = engineId || 'all';
       const selectedEngine = engines.find(e => e.id === currentEngineId);
@@ -163,8 +163,8 @@ const EnginesPage = () => {
 
   const handleResume = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.idInstance);
-      await resumeInstance(instance.idInstance);
+      setActionLoading(instance.id);
+      await resumeInstance(instance.id);
       // Reload instances after action
       const currentEngineId = engineId || 'all';
       const selectedEngine = engines.find(e => e.id === currentEngineId);
@@ -183,8 +183,8 @@ const EnginesPage = () => {
     if (!confirm(`Are you sure you want to delete "${instance.databaseName}"?`)) return;
     
     try {
-      setActionLoading(instance.idInstance);
-      await deleteInstance(instance.idInstance);
+      setActionLoading(instance.id);
+      await deleteInstance(instance.id);
       // Reload instances after action
       const currentEngineId = engineId || 'all';
       const selectedEngine = engines.find(e => e.id === currentEngineId);
@@ -334,7 +334,7 @@ const EnginesPage = () => {
                   <div className="space-y-4">
                     {instances.map((instance) => (
                       <div
-                        key={instance.idInstance}
+                        key={instance.id}
                         className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
                       >
                         <div className="flex items-center justify-between">
@@ -366,27 +366,27 @@ const EnginesPage = () => {
                             {instance.status === 'RUNNING' ? (
                               <button
                                 onClick={() => handleSuspend(instance)}
-                                disabled={actionLoading === instance.idInstance}
+                                disabled={actionLoading === instance.id}
                                 className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                               >
-                                {actionLoading === instance.idInstance ? 'Suspending...' : 'Suspend'}
+                                {actionLoading === instance.id ? 'Suspending...' : 'Suspend'}
                               </button>
                             ) : instance.status === 'SUSPENDED' ? (
                               <button
                                 onClick={() => handleResume(instance)}
-                                disabled={actionLoading === instance.idInstance}
+                                disabled={actionLoading === instance.id}
                                 className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                               >
-                                {actionLoading === instance.idInstance ? 'Resuming...' : 'Resume'}
+                                {actionLoading === instance.id ? 'Resuming...' : 'Resume'}
                               </button>
                             ) : null}
                             
                             <button
                               onClick={() => handleDelete(instance)}
-                              disabled={actionLoading === instance.idInstance || instance.status === 'DELETED'}
+                              disabled={actionLoading === instance.id || instance.status === 'DELETED'}
                               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                             >
-                              {actionLoading === instance.idInstance ? 'Deleting...' : 'Delete'}
+                              {actionLoading === instance.id ? 'Deleting...' : 'Delete'}
                             </button>
                           </div>
                         </div>

@@ -50,8 +50,8 @@ const InstancesPage = () => {
 
   const handleSuspend = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.idInstance);
-      await suspendInstance(instance.idInstance);
+      setActionLoading(instance.id);
+      await suspendInstance(instance.id);
     } catch (err) {
       console.error('Error suspending instance:', err);
     } finally {
@@ -61,8 +61,8 @@ const InstancesPage = () => {
 
   const handleResume = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.idInstance);
-      await resumeInstance(instance.idInstance);
+      setActionLoading(instance.id);
+      await resumeInstance(instance.id);
     } catch (err) {
       console.error('Error resuming instance:', err);
     } finally {
@@ -79,8 +79,8 @@ const InstancesPage = () => {
     if (!selectedInstance) return;
     
     try {
-      setActionLoading(selectedInstance.idInstance);
-      await deleteInstance(selectedInstance.idInstance);
+      setActionLoading(selectedInstance.id);
+      await deleteInstance(selectedInstance.id);
       setShowDeleteModal(false);
       setSelectedInstance(null);
     } catch (err) {
@@ -92,8 +92,8 @@ const InstancesPage = () => {
 
   const handleRotatePassword = async (instance: InstanceDetail) => {
     try {
-      setActionLoading(instance.idInstance);
-      const password = await rotatePassword(instance.idInstance);
+      setActionLoading(instance.id);
+      const password = await rotatePassword(instance.id);
       setNewPassword(password);
       setSelectedInstance(instance);
       setShowCredentialsModal(true);
@@ -251,7 +251,7 @@ const InstancesPage = () => {
             <div className="grid grid-cols-1 gap-6">
               {instances.map((instance) => (
                 <div
-                  key={instance.idInstance}
+                  key={instance.id}
                   className="bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 p-6 border border-gray-800 hover:border-gray-700"
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -307,34 +307,34 @@ const InstancesPage = () => {
                     {instance.status === 'RUNNING' && (
                       <button
                         onClick={() => handleSuspend(instance)}
-                        disabled={actionLoading === instance.idInstance}
+                        disabled={actionLoading === instance.id}
                         className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {actionLoading === instance.idInstance ? 'Suspending...' : 'Suspend'}
+                        {actionLoading === instance.id ? 'Suspending...' : 'Suspend'}
                       </button>
                     )}
                     
                     {instance.status === 'SUSPENDED' && (
                       <button
                         onClick={() => handleResume(instance)}
-                        disabled={actionLoading === instance.idInstance}
+                        disabled={actionLoading === instance.id}
                         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {actionLoading === instance.idInstance ? 'Resuming...' : 'Resume'}
+                        {actionLoading === instance.id ? 'Resuming...' : 'Resume'}
                       </button>
                     )}
                     
                     <button
                       onClick={() => handleRotatePassword(instance)}
-                      disabled={actionLoading === instance.idInstance || instance.status !== 'RUNNING'}
+                      disabled={actionLoading === instance.id || instance.status !== 'RUNNING'}
                       className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {actionLoading === instance.idInstance ? 'Rotating...' : 'Rotate Password'}
+                      {actionLoading === instance.id ? 'Rotating...' : 'Rotate Password'}
                     </button>
                     
                     <button
                       onClick={() => handleDeleteClick(instance)}
-                      disabled={actionLoading === instance.idInstance}
+                      disabled={actionLoading === instance.id}
                       className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Delete
@@ -380,7 +380,7 @@ const InstancesPage = () => {
             setShowDeleteModal(false);
             setSelectedInstance(null);
           }}
-          loading={actionLoading === selectedInstance.idInstance}
+          loading={actionLoading === selectedInstance.id}
         />
       )}
     </div>
