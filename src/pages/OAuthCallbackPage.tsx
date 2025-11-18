@@ -33,10 +33,59 @@ const OAuthCallbackPage = () => {
         const userId = searchParams.get('userId');
         const planId = searchParams.get('planId');
 
+        console.log('OAuth Callback - All query params:', {
+          profileCompleted,
+          email,
+          fullName,
+          userType,
+          userId,
+          planId
+        });
+
         if (!email) {
           setError('Invalid authentication response. Please try again.');
           setTimeout(() => navigate('/login'), 3000);
           return;
+        }
+
+        // Parse initial values
+        let finalUserId = userId ? parseInt(userId) : undefined;
+        let finalPlanId = planId ? parseInt(planId) : undefined;
+
+        console.log('Initial values - userId:', finalUserId, 'planId:', finalPlanId);
+
+        // Always fetch from /me endpoint to ensure we have complete user data
+        console.log('Fetching user data from /me endpoint...');
+        try {
+          const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/v1/auth/me`;
+          console.log('Calling:', apiUrl);
+          
+          const response = await fetch(apiUrl, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          console.log('Response status:', response.status, response.ok);
+
+          if (response.ok) {
+            const meData = await response.json();
+            console.log('Data received from /me endpoint:', meData);
+            
+            // Update with data from /me endpoint
+            finalUserId = meData.userId || meData.id || finalUserId;
+            finalPlanId = meData.planId || finalPlanId;
+            
+            console.log('Updated values - userId:', finalUserId, 'planId:', finalPlanId);
+          } else {
+            const errorText = await response.text();
+            console.error('Failed to fetch from /me endpoint. Status:', response.status, 'Error:', errorText);
+          }
+        } catch (meError) {
+          console.error('Error fetching user data from /me:', meError);
+          // Continue anyway, we'll use what we have
         }
 
         // Parse user data from query parameters sent by backend
@@ -44,9 +93,11 @@ const OAuthCallbackPage = () => {
           email,
           fullName: fullName || '',
           userType: userType || 'INDIVIDUAL',
-          userId: userId ? parseInt(userId) : undefined,
-          planId: planId ? parseInt(planId) : undefined,
+          userId: finalUserId,
+          planId: finalPlanId,
         };
+
+        console.log('Final userData to save:', userData);
 
         // Process the OAuth callback in the auth context with complete user data
         await handleOAuthCallback(userData);

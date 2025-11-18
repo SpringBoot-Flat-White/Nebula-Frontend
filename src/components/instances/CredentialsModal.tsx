@@ -48,19 +48,19 @@ const CredentialsModal = ({ instance, password, onClose }: CredentialsModalProps
     doc.setFont('helvetica', 'bold');
     doc.text('Database Name:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.databaseName, 70, y);
+    doc.text(instance.databaseName || 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Database Engine:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.engineName, 70, y);
+    doc.text(instance.engineName || 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Status:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.status, 70, y);
+    doc.text(instance.status || 'N/A', 70, y);
     
     // Connection Details
     y += 20;
@@ -75,31 +75,31 @@ const CredentialsModal = ({ instance, password, onClose }: CredentialsModalProps
     doc.setFont('helvetica', 'bold');
     doc.text('Host:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.containerIp, 70, y);
+    doc.text(instance.containerIp || 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Port:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.containerPort.toString(), 70, y);
+    doc.text(instance.containerPort ? instance.containerPort.toString() : 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Database:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.databaseName, 70, y);
+    doc.text(instance.databaseName || 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Username:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(instance.dbUsername, 70, y);
+    doc.text(instance.dbUsername || 'N/A', 70, y);
     
     y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text('Password:', 20, y);
     doc.setFont('helvetica', 'normal');
-    doc.text(password, 70, y);
+    doc.text(password || 'N/A', 70, y);
     
     // Footer
     y += 20;

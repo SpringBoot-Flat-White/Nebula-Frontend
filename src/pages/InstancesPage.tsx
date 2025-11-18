@@ -34,7 +34,10 @@ const InstancesPage = () => {
   };
 
   const getStatusColor = (status: ContainerStatus): string => {
-    switch (status) {
+    // Normalize status to uppercase for comparison
+    const normalizedStatus = status?.toString().toUpperCase() as ContainerStatus;
+    
+    switch (normalizedStatus) {
       case 'RUNNING':
         return 'bg-green-900/50 text-green-400 border-green-700';
       case 'SUSPENDED':
@@ -44,6 +47,7 @@ const InstancesPage = () => {
       case 'DELETED':
         return 'bg-red-900/50 text-red-400 border-red-700';
       default:
+        console.log('Unknown status received:', status);
         return 'bg-gray-800 text-gray-400 border-gray-700';
     }
   };
@@ -249,7 +253,10 @@ const InstancesPage = () => {
 
           {instances.length > 0 && (
             <div className="grid grid-cols-1 gap-6">
-              {instances.map((instance) => (
+              {instances.map((instance) => {
+                console.log('Instance data:', instance);
+                console.log('Instance status:', instance.status);
+                return (
                 <div
                   key={instance.id}
                   className="bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 p-6 border border-gray-800 hover:border-gray-700"
@@ -259,7 +266,7 @@ const InstancesPage = () => {
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-2xl font-bold text-white">{instance.databaseName}</h3>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${instance.status ? getStatusColor(instance.status as ContainerStatus) : 'bg-gray-800 text-gray-400 border-gray-700'}`}>
-                          {instance.status || 'UNKNOWN'}
+                          {instance.status ? instance.status.toUpperCase() : 'UNKNOWN'}
                         </span>
                       </div>
                       <p className="text-gray-300 mb-2">
@@ -341,7 +348,8 @@ const InstancesPage = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </main>

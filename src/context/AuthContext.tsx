@@ -82,6 +82,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         fullName: resp.fullName,
         userType: resp.userType,
         plan: resp.plan || 'FREE', // Default to FREE if not provided by backend
+        userId: resp.userId,
+        planId: resp.planId,
       };
 
       localStorage.setItem('user', JSON.stringify(newUser));
@@ -179,14 +181,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const userData = await response.json();
 
+      console.log('Complete profile - Response from backend:', userData);
+      console.log('Complete profile - Current user data:', user);
+
       const updatedUser: User = {
-        email: userData.email,
-        fullName: userData.fullName,
+        email: userData.email || user?.email || email,
+        fullName: userData.fullName || fullName,
         userType: userData.userType || user?.userType || 'INDIVIDUAL',
         plan: userData.plan || user?.plan || 'FREE',
-        userId: userData.userId,
-        planId: userData.planId,
+        // Preserve userId and planId from current user if backend doesn't return them
+        userId: userData.userId || user?.userId,
+        planId: userData.planId || user?.planId,
       };
+
+      console.log('Complete profile - Final user data:', updatedUser);
 
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
