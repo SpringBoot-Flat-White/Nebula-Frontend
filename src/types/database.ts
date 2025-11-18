@@ -57,18 +57,18 @@ export interface Instance {
 }
 
 // Instance with full details (populated from joins)
-export interface InstanceDetail extends Instance {
-  idInstance: number;
-  databaseName: string;
-  engineName: EngineName;
-  container: Container;
-  engine: Engine;
-  credentials: InstanceCredentials;
+export interface InstanceDetail {
+  id: number; // Instance ID (from backend)
   status: ContainerStatus;
+  databaseName: string;
+  createdAt: string;
+  containerId: number;
   containerIp: string;
   containerPort: number;
+  engineName: EngineName;
   dbUsername: string;
   password?: string; // Only shown once after creation
+  userId: number;
 }
 
 // Credentials shown only once
@@ -140,4 +140,10 @@ export interface CreateInstanceResponse {
 export interface RotatePasswordResponse {
   newPassword: string;
   rotatedAt: string;
+}
+
+export interface InstanceUpdateRequest {
+  user: number; // User ID who owns the instance
+  instanceId: number; // Instance ID to update
+  status: 'RUNNING' | 'SUSPENDED'; // New status
 }

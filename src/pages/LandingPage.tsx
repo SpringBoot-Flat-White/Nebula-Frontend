@@ -3,6 +3,7 @@ import Footer from '../components/layout/Footer';
 import Hero from '../components/landing/Hero';
 import Features from '../components/landing/Features';
 import DatabaseEngines from '../components/landing/DatabaseEngines';
+import Statistics from '../components/landing/Statistics';
 import Pricing from '../components/landing/Pricing';
 import CTA from '../components/landing/CTA';
 
@@ -14,6 +15,7 @@ const LandingPage = () => {
         <Hero />
         <Features />
         <DatabaseEngines />
+        <Statistics />
         <Pricing />
         <CTA />
       </main>

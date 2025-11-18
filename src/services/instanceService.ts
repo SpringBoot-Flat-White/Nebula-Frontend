@@ -3,6 +3,7 @@ import type {
   CreateInstanceRequest,
   CreateInstanceResponse,
   RotatePasswordResponse,
+  InstanceUpdateRequest,
   Engine,
 } from '../types/database';
 
@@ -100,17 +101,41 @@ export const createInstance = async (
 
 /**
  * Suspend an instance
- * PUT /api/instances/{id}/suspend
+ * PUT /api/instances
  */
-export const suspendInstance = async (id: number): Promise<InstanceDetail> => {
+export const suspendInstance = async (instanceId: number): Promise<InstanceDetail> => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+  
+  // Get userId from localStorage
+  const userData = localStorage.getItem('user');
+  if (!userData) {
+    throw new Error('User not authenticated');
+  }
+  
+  const user = JSON.parse(userData);
+  if (!user.userId) {
+    throw new Error('User ID not found');
+  }
 
-  const response = await fetch(`${API_BASE_URL}/api/instances/${id}/suspend`, {
+  if (!instanceId) {
+    throw new Error('Instance ID is required');
+  }
+
+  const requestBody: InstanceUpdateRequest = {
+    user: user.userId,
+    instanceId,
+    status: 'SUSPENDED',
+  };
+
+  console.log('Suspend request body:', requestBody);
+
+  const response = await fetch(`${API_BASE_URL}/api/instances`, {
     method: 'PUT',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
@@ -122,17 +147,41 @@ export const suspendInstance = async (id: number): Promise<InstanceDetail> => {
 
 /**
  * Resume an instance
- * PUT /api/instances/{id}/resume
+ * PUT /api/instances
  */
-export const resumeInstance = async (id: number): Promise<InstanceDetail> => {
+export const resumeInstance = async (instanceId: number): Promise<InstanceDetail> => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+  
+  // Get userId from localStorage
+  const userData = localStorage.getItem('user');
+  if (!userData) {
+    throw new Error('User not authenticated');
+  }
+  
+  const user = JSON.parse(userData);
+  if (!user.userId) {
+    throw new Error('User ID not found');
+  }
 
-  const response = await fetch(`${API_BASE_URL}/api/instances/${id}/resume`, {
+  if (!instanceId) {
+    throw new Error('Instance ID is required');
+  }
+
+  const requestBody: InstanceUpdateRequest = {
+    user: user.userId,
+    instanceId,
+    status: 'RUNNING',
+  };
+
+  console.log('Resume request body:', requestBody);
+
+  const response = await fetch(`${API_BASE_URL}/api/instances`, {
     method: 'PUT',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
