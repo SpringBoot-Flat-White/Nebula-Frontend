@@ -65,9 +65,10 @@ export interface InstanceDetail extends Instance {
   engine: Engine;
   credentials: InstanceCredentials;
   status: ContainerStatus;
-  containerIp?: string;
-  containerPort?: number;
-  dbUsername?: string;
+  containerIp: string;
+  containerPort: number;
+  dbUsername: string;
+  password?: string; // Only shown once after creation
 }
 
 // Credentials shown only once
@@ -130,7 +131,7 @@ export interface CreateInstanceResponse {
   containerIp: string;
   status: string;
   containerPort: number;
-  password: string;
+  password?: string;
   userId: number;
   containerId: number;
   createdAt: string;
