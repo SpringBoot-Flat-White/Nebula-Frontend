@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { cancelPayment } from '../services/paymentService';
 
 const PaymentFailurePage = () => {
   const navigate = useNavigate();
@@ -14,6 +15,13 @@ const PaymentFailurePage = () => {
     const preferenceId = searchParams.get('preference_id');
 
     console.log('Payment Failure:', { paymentId, status, preferenceId });
+
+    // If we have a preference_id, cancel the payment in our backend
+    if (preferenceId) {
+      cancelPayment(preferenceId).catch(err => 
+        console.error('Failed to cancel payment on failure page load', err)
+      );
+    }
   }, [searchParams]);
 
   const handleLogout = () => {

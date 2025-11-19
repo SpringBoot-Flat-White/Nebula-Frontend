@@ -36,3 +36,28 @@ export const createPayment = async (
   }
 };
 
+/**
+ * Cancels a pending payment
+ * @param preferenceId - Mercado Pago Preference ID
+ */
+export const cancelPayment = async (preferenceId: string): Promise<void> => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/v1/payments/cancel?preferenceId=${preferenceId}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      }
+    );
+
+    if (!response.ok) {
+      console.error('Error cancelling payment:', response.status);
+    }
+  } catch (error) {
+    console.error('Payment cancellation error:', error);
+  }
+};
+
