@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { User, LoginCredentials, RegisterData, AuthContextType, AccountType } from '../types';
+import type { User, LoginCredentials, RegisterData, AuthContextType, AccountType, PlanType } from '../types';
 import { loginRequest, registerRequest } from '../hooks/Auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
@@ -128,15 +128,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     userType: string;
     userId?: number;
     planId?: number;
+    plan?: string;
   }) => {
     setIsLoading(true);
     try {
+      // Fetch complete user data from backend to get the correct plan
+      let planName: PlanType = 'FREE';
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const backendData = await response.json();
+          const backendPlan = backendData.plan?.toUpperCase();
+          // Validate that the plan is a valid PlanType
+          if (backendPlan === 'FREE' || backendPlan === 'STANDARD' || backendPlan === 'PREMIUM') {
+            planName = backendPlan as PlanType;
+          }
+          console.log('OAuth - Fetched plan from backend:', planName);
+        }
+      } catch (error) {
+        console.error('Failed to fetch plan from backend:', error);
+      }
+
       // Create user profile from data sent by backend in query parameters
       const newUser: User = {
         email: userData.email,
         fullName: userData.fullName,
         userType: userData.userType as AccountType,
-        plan: 'FREE', // Default, can be updated based on planId if needed
+        plan: planName,
         userId: userData.userId,
         planId: userData.planId,
       };
