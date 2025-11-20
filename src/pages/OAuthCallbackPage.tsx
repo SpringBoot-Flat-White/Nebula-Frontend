@@ -33,7 +33,7 @@ const OAuthCallbackPage = () => {
         const userId = searchParams.get('userId');
         const planId = searchParams.get('planId');
 
-        console.log('OAuth Callback - All query params:', {
+        console.log('OAuth Callback V2 - All query params:', {
           profileCompleted,
           email,
           fullName,

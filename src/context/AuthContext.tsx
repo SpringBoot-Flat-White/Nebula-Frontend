@@ -137,6 +137,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       // If plan is provided in userData (from OAuthCallbackPage), use it
       if (userData.plan) {
+        console.log('OAuth - Using plan from userData:', userData.plan);
         const p = userData.plan.toUpperCase();
         if (p === 'FREE' || p === 'STANDARD' || p === 'PREMIUM') {
           planName = p as PlanType;
