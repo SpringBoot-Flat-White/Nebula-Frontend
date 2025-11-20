@@ -56,6 +56,8 @@ const OAuthCallbackPage = () => {
 
         // Always fetch from /me endpoint to ensure we have complete user data
         console.log('Fetching user data from /me endpoint...');
+        let finalPlanName = 'FREE';
+        
         try {
           const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/v1/auth/me`;
           console.log('Calling:', apiUrl);
@@ -77,8 +79,11 @@ const OAuthCallbackPage = () => {
             // Update with data from /me endpoint
             finalUserId = meData.userId || meData.id || finalUserId;
             finalPlanId = meData.planId || finalPlanId;
+            if (meData.plan) {
+              finalPlanName = meData.plan;
+            }
             
-            console.log('Updated values - userId:', finalUserId, 'planId:', finalPlanId);
+            console.log('Updated values - userId:', finalUserId, 'planId:', finalPlanId, 'plan:', finalPlanName);
           } else {
             const errorText = await response.text();
             console.error('Failed to fetch from /me endpoint. Status:', response.status, 'Error:', errorText);
@@ -95,6 +100,7 @@ const OAuthCallbackPage = () => {
           userType: userType || 'INDIVIDUAL',
           userId: finalUserId,
           planId: finalPlanId,
+          plan: finalPlanName,
         };
 
         console.log('Final userData to save:', userData);

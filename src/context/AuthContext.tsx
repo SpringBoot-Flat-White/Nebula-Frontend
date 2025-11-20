@@ -132,29 +132,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }) => {
     setIsLoading(true);
     try {
-      // Fetch complete user data from backend to get the correct plan
+      // Determine plan name
       let planName: PlanType = 'FREE';
       
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const backendData = await response.json();
-          const backendPlan = backendData.plan?.toUpperCase();
-          // Validate that the plan is a valid PlanType
-          if (backendPlan === 'FREE' || backendPlan === 'STANDARD' || backendPlan === 'PREMIUM') {
-            planName = backendPlan as PlanType;
-          }
-          console.log('OAuth - Fetched plan from backend:', planName);
+      // If plan is provided in userData (from OAuthCallbackPage), use it
+      if (userData.plan) {
+        const p = userData.plan.toUpperCase();
+        if (p === 'FREE' || p === 'STANDARD' || p === 'PREMIUM') {
+          planName = p as PlanType;
         }
-      } catch (error) {
-        console.error('Failed to fetch plan from backend:', error);
+      } else {
+        // Fallback: Fetch complete user data from backend if not provided
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const backendData = await response.json();
+            const backendPlan = backendData.plan?.toUpperCase();
+            // Validate that the plan is a valid PlanType
+            if (backendPlan === 'FREE' || backendPlan === 'STANDARD' || backendPlan === 'PREMIUM') {
+              planName = backendPlan as PlanType;
+            }
+            console.log('OAuth - Fetched plan from backend:', planName);
+          }
+        } catch (error) {
+          console.error('Failed to fetch plan from backend:', error);
+        }
       }
 
       // Create user profile from data sent by backend in query parameters
